@@ -1,0 +1,19 @@
+{
+  "navigation": [
+    {
+      "title": "Home",
+      "type": "page",
+      "file": "pages/home.html"
+    },
+    {
+      "title": "About",
+      "type": "page",
+      "file": "pages/about.html"
+    },
+    {
+      "title": "Contacts",
+      "type": "page",
+      "file": "pages/contacts.html"
+    }
+  ]
+}
