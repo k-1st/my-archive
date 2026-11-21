@@ -1,8 +1,18 @@
-import { readdir, mkdir, writeFile } from "node:fs/promises";
+import {
+    readdir,
+    mkdir,
+    writeFile,
+    readFile,
+    access
+} from "node:fs/promises";
+
 import path from "node:path";
 
 const archiveRoot = path.resolve("archive");
-const outputFile = path.resolve("data/archive-index.json");
+const metadataRoot = path.resolve("storage-data/archive");
+
+const indexOutput = path.resolve("data/archive-index.json");
+const searchOutput = path.resolve("data/archive-search.json");
 
 const ignoredFiles = new Set([
     ".DS_Store",
@@ -11,6 +21,53 @@ const ignoredFiles = new Set([
     ".gitkeep",
     "README.md"
 ]);
+
+function encodeArchivePath(relativePath) {
+    return "archive/" +
+        relativePath
+            .split("/")
+            .map(encodeURIComponent)
+            .join("/");
+}
+
+function cleanString(value) {
+    return typeof value === "string" ? value.trim() : "";
+}
+
+function cleanStringArray(value) {
+    if (!Array.isArray(value)) return [];
+
+    return value.filter(
+        item => typeof item === "string"
+    );
+}
+
+async function readMetadata(relativePath) {
+    const metadataPath = path.join(
+        metadataRoot,
+        relativePath.replace(/\.(html|htm)$/i, ".json")
+    );
+
+    try {
+        await access(metadataPath);
+    } catch {
+        console.warn(
+            `Metadata not found for ${relativePath}. Using filename as title.`
+        );
+
+        return {};
+    }
+
+    const content = await readFile(metadataPath, "utf8");
+
+    try {
+        return JSON.parse(content);
+    } catch (error) {
+        throw new Error(
+            `Invalid JSON metadata: ${metadataPath}\n${error.message}`
+        );
+    }
+}
 
 async function scanDirectory(directory, relativePath = "") {
     const entries = await readdir(directory, {
@@ -53,19 +110,44 @@ async function scanDirectory(directory, relativePath = "") {
                     children
                 });
             }
-        }
-
-        else if (entry.isFile()) {
+        } else if (entry.isFile()) {
             const extension = path.extname(entry.name).toLowerCase();
 
-            const file = "archive/" +
-                itemPath.split("/")
-                    .map(encodeURIComponent)
-                    .join("/");
+            const file = encodeArchivePath(itemPath);
 
             if (extension === ".html" || extension === ".htm") {
+                const metadata = await readMetadata(itemPath);
+
+                const filename = entry.name.replace(/\.html?$/i, "");
+
+                const title =
+                    cleanString(metadata.title) || filename;
+
+                const date = cleanString(metadata.date);
+
+                const validDate =
+                    /^\d{4}-\d{2}-\d{2}$/.test(date) &&
+                    !Number.isNaN(Date.parse(date));
+
+                const folder = path.posix.dirname(itemPath);
+
+                const searchItem = {
+                    title,
+                    date: validDate ? date : "",
+                    description: cleanString(metadata.description),
+                    tags: cleanStringArray(metadata.tags),
+                    keywords: cleanStringArray(metadata.keywords),
+                    searchText: cleanString(metadata.searchText),
+                    featured: metadata.featured === true,
+                    folder: folder === "." ? "" : folder,
+                    filename,
+                    file
+                };
+
+                searchItems.push(searchItem);
+
                 items.push({
-                    title: entry.name.replace(/\.html?$/i, ""),
+                    title: filename,
                     type: "page",
                     file
                 });
@@ -82,7 +164,9 @@ async function scanDirectory(directory, relativePath = "") {
     return items;
 }
 
-async function generateIndex() {
+const searchItems = [];
+
+async function generateIndexes() {
     const navigation = await scanDirectory(archiveRoot);
 
     await mkdir("data", { recursive: true });
@@ -93,14 +177,35 @@ async function generateIndex() {
     };
 
     await writeFile(
-        outputFile,
+        indexOutput,
         JSON.stringify(index, null, 2) + "\n"
     );
 
-    console.log("Archive index generated successfully.");
+    searchItems.sort((a, b) =>
+        a.title.localeCompare(b.title, undefined, {
+            numeric: true,
+            sensitivity: "base"
+        })
+    );
+
+    const searchIndex = {
+        generatedAt: new Date().toISOString(),
+        total: searchItems.length,
+        items: searchItems
+    };
+
+    await writeFile(
+        searchOutput,
+        JSON.stringify(searchIndex, null, 2) + "\n"
+    );
+
+    console.log("Archive navigation index generated.");
+    console.log(
+        `Archive search index generated: ${searchItems.length} items.`
+    );
 }
 
-generateIndex().catch(error => {
-    console.error("Failed to generate archive index:", error);
+generateIndexes().catch(error => {
+    console.error("Failed to generate archive indexes:", error);
     process.exit(1);
 });
