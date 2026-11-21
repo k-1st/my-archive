@@ -631,6 +631,7 @@ body {
 }
 
 .section-class {
+    min-height: 100%;
     max-width: 1920px;
     border: 1px solid #ddd;
     border-radius: 12px;
