@@ -3,34 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archive Website</title>
+    <title>My Archive</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
+<div class="app-shell" id="app-shell">
+
     <header class="header">
-        <div class="logo">MY ARCHIVE</div>
+
+        <div class="header-left">
+            <button
+                class="icon-button sidebar-toggle"
+                id="sidebar-toggle"
+                aria-label="Toggle sidebar"
+                aria-expanded="true"
+                title="Toggle sidebar">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 6h18M3 12h18M3 18h18"/>
+                </svg>
+            </button>
+
+            <button class="logo" id="home-link">MY ARCHIVE</button>
+        </div>
+
+        <nav class="header-navigation" id="header-navigation"></nav>
+
+        <div class="header-actions">
+            <button
+                class="icon-button"
+                id="more-toggle"
+                aria-label="More options"
+                aria-expanded="false"
+                title="More options">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="5" cy="12" r="1.5"/>
+                    <circle cx="12" cy="12" r="1.5"/>
+                    <circle cx="19" cy="12" r="1.5"/>
+                </svg>
+            </button>
+
+            <div class="more-menu" id="more-menu">
+                <button id="more-home">Home</button>
+                <button id="more-sidebar">Toggle sidebar</button>
+            </div>
+        </div>
+
     </header>
 
     <div class="layout">
 
-        <aside class="sidebar">
+        <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+        <aside class="sidebar" id="sidebar">
             <nav id="navigation"></nav>
         </aside>
 
         <main class="content">
             <div id="page-content">
-                Loading...
+
+                <section class="home-page">
+                    <h1>Welcome to My Archive</h1>
+                    <p>Your personal collection of archived content, organized in one place.</p>
+
+                    <div class="home-section">
+                        <h2>Featured</h2>
+                        <p>Featured archive content will appear here.</p>
+                    </div>
+
+                    <div class="home-section">
+                        <h2>Recently added</h2>
+                        <p>Your latest additions will appear here.</p>
+                    </div>
+                </section>
+
             </div>
         </main>
 
     </div>
 
-    <footer class="footer">
-        © 2026 My Archive
-    </footer>
+</div>
 
-    <script src="app.js"></script>
+<script src="app.js"></script>
 
 </body>
 </html>
