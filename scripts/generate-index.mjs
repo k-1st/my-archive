@@ -139,6 +139,7 @@ async function scanDirectory(directory, relativePath = "") {
                     keywords: cleanStringArray(metadata.keywords),
                     searchText: cleanString(metadata.searchText),
                     featured: metadata.featured === true,
+                    thumbnail: cleanString(metadata.thumbnail),
                     folder: folder === "." ? "" : folder,
                     filename,
                     file
