@@ -8,6 +8,18 @@ const icons = {
 
     file: `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
         <path d="M3.75 1A1.75 1.75 0 0 0 2 2.75v10.5C2 14.216 2.784 15 3.75 15h8.5A1.75 1.75 0 0 0 14 13.25V5.81a1.75 1.75 0 0 0-.513-1.237L9.427 1.513A1.75 1.75 0 0 0 8.19 1H3.75Zm5 1.5v3a1 1 0 0 0 1 1h3v6.75a.25.25 0 0 1-.25.25h-8.5a.25.25 0 0 1-.25-.25V2.75a.25.25 0 0 1 .25-.25h4.75Z"/>
+    </svg>`,
+
+    search: `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M11.5 10.5a6 6 0 1 0-1 1l3.75 3.75 1-1-3.75-3.75ZM6.5 11a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9Z"/>
+    </svg>`,
+
+    about: `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0ZM7.25 7h1.5v5h-1.5V7Zm.75-1.25a.875.875 0 1 1 0-1.75.875.875 0 0 1 0 1.75Z"/>
+    </svg>`,
+
+    contact: `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M1.75 2h12.5A1.75 1.75 0 0 1 16 3.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5A1.75 1.75 0 0 1 1.75 2Zm-.25 2.1v.3l6.5 4.35 6.5-4.35v-.3a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Zm13 2.1-6.08 4.07a.75.75 0 0 1-.84 0L1.5 6.2v6.05c0 .14.11.25.25.25h12.5a.25.25 0 0 0 .25-.25V6.2Z"/>
     </svg>`
 };
 
