@@ -17,7 +17,12 @@
 
     --border-color: #ddd;
     --soft-border: #e5e5e5;
+
     --hover-bg: #e3e3e3;
+    --active-bg: #d8dadd;
+
+    --icon-color: #656d76;
+    --icon-hover-color: #333;
 
     --menu-bg: #fff;
     --menu-text: #333;
@@ -25,15 +30,13 @@
 
     --surface-bg: #fff;
     --footer-text: #777;
-
-    --shadow: 0 5px 18px rgba(0, 0, 0, 0.15);
 }
 
 :root[data-theme="dark"] {
     color-scheme: dark;
 
     --header-bg: #20242a;
-    --header-text: #e6e8eb;
+    --header-text: #e1e4e8;
 
     --page-bg: #171a1f;
     --text-color: #e1e4e8;
@@ -41,7 +44,12 @@
 
     --border-color: #383e46;
     --soft-border: #30363d;
+
     --hover-bg: #303740;
+    --active-bg: #3b4551;
+
+    --icon-color: #a0a8b3;
+    --icon-hover-color: #fff;
 
     --menu-bg: #252a32;
     --menu-text: #e1e4e8;
@@ -49,8 +57,6 @@
 
     --surface-bg: #20252c;
     --footer-text: #9aa2ad;
-
-    --shadow: 0 5px 18px rgba(0, 0, 0, 0.4);
 }
 
 body {
@@ -446,4 +452,86 @@ body {
         width: 34px;
         height: 34px;
     }
+}
+
+/* Theme-aware borders */
+
+.header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar {
+    border-right: 1px solid var(--border-color);
+}
+
+.tree-children {
+    border-left: 1px solid var(--border-color);
+}
+
+.footer {
+    border-top: 1px solid var(--soft-border);
+    color: var(--footer-text);
+}
+
+.home-section {
+    background: var(--surface-bg);
+    border-color: var(--soft-border);
+}
+
+/* Header text and controls */
+
+.logo,
+.icon-button,
+.header-link {
+    color: var(--header-text);
+}
+
+.icon-button:hover,
+.header-link:hover,
+.header-link.active {
+    background: var(--hover-bg);
+    color: var(--header-text);
+}
+
+/* Sidebar navigation */
+
+.nav-link {
+    color: var(--text-color);
+}
+
+.nav-link svg {
+    color: var(--icon-color);
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: var(--hover-bg);
+    color: var(--text-color);
+}
+
+.nav-link:hover svg,
+.nav-link.active svg {
+    color: var(--icon-hover-color);
+}
+
+/* Header navigation icons */
+
+.header-link svg {
+    color: inherit;
+}
+
+/* More menu */
+
+.more-menu {
+    background: var(--menu-bg);
+    border-color: var(--border-color);
+}
+
+.more-menu button {
+    background: var(--menu-bg);
+    color: var(--menu-text);
+}
+
+.more-menu button:hover {
+    background: var(--menu-hover);
 }
