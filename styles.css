@@ -396,7 +396,7 @@ body {
 
     .sidebar {
         position: fixed;
-        top: var(--header-height);
+        top: calc(var(--header-height) + var(--toolbar-height));
         bottom: 0;
         left: 0;
         z-index: 15;
@@ -420,7 +420,7 @@ body {
 
     .sidebar-backdrop {
         position: fixed;
-        inset: var(--header-height) 0 0;
+        inset: calc(var(--header-height) + var(--toolbar-height)) 0 0;
         z-index: 14;
         background: rgba(0, 0, 0, 0.35);
     }
@@ -537,4 +537,90 @@ body {
 
 .more-menu button:hover {
     background: var(--menu-hover);
+}
+
+/* Page navigation toolbar */
+
+:root {
+    --toolbar-height: 42px;
+}
+
+.page-toolbar {
+    height: var(--toolbar-height);
+    min-height: var(--toolbar-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 24px;
+    background: var(--surface-bg);
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    z-index: 10;
+}
+
+.breadcrumb,
+.history-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.breadcrumb {
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+.breadcrumb button,
+.history-controls button {
+    border: 0;
+    background: transparent;
+    color: var(--text-color);
+    font: inherit;
+    cursor: pointer;
+}
+
+.breadcrumb button {
+    padding: 4px 0;
+}
+
+.breadcrumb button:hover,
+.history-controls button:hover:not(:disabled) {
+    text-decoration: underline;
+}
+
+#breadcrumb-current {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.history-controls {
+    flex-shrink: 0;
+}
+
+.history-controls button {
+    padding: 5px 9px;
+    border-radius: 5px;
+}
+
+.history-controls button:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+@media (max-width: 700px) {
+    .page-toolbar {
+        padding: 0 12px;
+    }
+
+    .history-controls {
+        gap: 2px;
+    }
+
+    .history-controls button {
+        padding: 5px 6px;
+        font-size: 12px;
+    }
 }
