@@ -7,7 +7,7 @@
 
     --header-height: 64px;
     --sidebar-width: 260px;
-    --sidebar-bg: #f3f3f3;
+    --sidebar-bg: #fff;
     
     --header-bg: #f0f2f4;
     --header-text: #333;
@@ -38,7 +38,7 @@
 
     --header-bg: #20242a;
     --header-text: #e1e4e8;
-    --sidebar-bg: #20252c;
+    --sidebar-bg: #171a1f;
 
     --page-bg: #171a1f;
     --text-color: #e1e4e8;
