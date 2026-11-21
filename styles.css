@@ -45,7 +45,7 @@ body {
     color: var(--header-text);
     position: relative;
     z-index: 20;
-    border-bottom: 1px sold #ddd;
+    border-bottom: 1px solid #ddd;
 }
 
 .header-left,
