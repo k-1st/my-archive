@@ -7,7 +7,8 @@
 
     --header-height: 64px;
     --sidebar-width: 260px;
-
+    --sidebar-bg: #f3f3f3;
+    
     --header-bg: #f0f2f4;
     --header-text: #333;
 
@@ -37,6 +38,7 @@
 
     --header-bg: #20242a;
     --header-text: #e1e4e8;
+    --sidebar-bg: #20252c;
 
     --page-bg: #171a1f;
     --text-color: #e1e4e8;
@@ -225,6 +227,7 @@ body {
 .sidebar {
     width: var(--sidebar-width);
     min-width: var(--sidebar-width);
+    background: var(--sidebar-bg);
     padding: 20px;
     overflow-y: auto;
     border-right: 1px solid var(--sidebar-border);
