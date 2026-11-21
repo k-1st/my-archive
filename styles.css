@@ -5,8 +5,8 @@
 :root {
     --header-height: 64px;
     --sidebar-width: 260px;
-    --header-bg: #222;
-    --header-text: #fff;
+    --header-bg: #f0f2f4;
+    --header-text: #333;
     --sidebar-bg: #f3f3f3;
     --sidebar-border: #ddd;
     --text-color: #333;
