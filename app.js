@@ -282,6 +282,12 @@ async function loadPage(file) {
     }
 }
 
+window.loadArchivePage = function(file) {
+    loadPage(file);
+    closeMobileSidebar();
+    closeMoreMenu();
+};
+
 /* Initialize */
 
 async function initialize() {
