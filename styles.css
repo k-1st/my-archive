@@ -629,3 +629,10 @@ body {
         font-size: 12px;
     }
 }
+
+.section-class {
+    max-width: 1920px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+}
