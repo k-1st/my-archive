@@ -50,6 +50,10 @@ jobs:
           cp -a storage/archive/. archive/
           cp -a storage/data/. storage-data/
 
+          
+          mkdir -p data
+          cp -a storage/data/. data/
+
           rm -rf storage
 
       - name: Generate archive indexes
