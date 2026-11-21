@@ -9,7 +9,20 @@ const moreToggle = document.getElementById("more-toggle");
 const moreMenu = document.getElementById("more-menu");
 const homeLink = document.getElementById("home-link");
 
+const breadcrumbHome = document.getElementById("breadcrumb-home");
+const breadcrumbCurrent = document.getElementById("breadcrumb-current");
+const historyBack = document.getElementById("history-back");
+const historyForward = document.getElementById("history-forward");
+
+const themeToggle = document.getElementById("theme-toggle");
+
 let pageItems = [];
+let pageTitleMap = new Map();
+
+let navigationIndex = 0;
+let highestNavigationIndex = 0;
+let activeRequest = null;
+let navigationToken = 0;
 
 const icons = {
     folder: `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
@@ -36,14 +49,21 @@ const icons = {
     </svg>`
 };
 
-document.getElementById("copyright-year").textContent = new Date().getFullYear();
+document.getElementById("copyright-year").textContent =
+    new Date().getFullYear();
+
+/* --------------------------------------------------
+   General helpers
+-------------------------------------------------- */
 
 function getPageIcon(title) {
-    const name = title.toLowerCase();
+    const name = String(title || "").toLowerCase();
 
     if (name === "search") return icons.search;
     if (name === "about") return icons.about;
-    if (name === "contact" || name === "contacts") return icons.contacts;
+    if (name === "contact" || name === "contacts") {
+        return icons.contacts;
+    }
 
     return icons.file;
 }
@@ -52,15 +72,91 @@ function isMobile() {
     return window.matchMedia("(max-width: 700px)").matches;
 }
 
-/* Sidebar controls */
+function getPageTitle(file) {
+    if (!file) return "Home";
+
+    if (pageTitleMap.has(file)) {
+        return pageTitleMap.get(file);
+    }
+
+    const filename = file.split("/").pop() || "";
+    return decodeURIComponent(filename)
+        .replace(/\.html?$/i, "")
+        .replace(/[-_]/g, " ")
+        .replace(/\b\w/g, letter => letter.toUpperCase());
+}
+
+function getCurrentFile() {
+    return new URL(window.location.href).searchParams.get("page");
+}
+
+function makePageUrl(file) {
+    const url = new URL(window.location.href);
+
+    if (file) {
+        url.searchParams.set("page", file);
+    } else {
+        url.searchParams.delete("page");
+    }
+
+    return url.pathname + url.search + url.hash;
+}
+
+function updateHistoryButtons() {
+    historyBack.disabled = navigationIndex <= 0;
+    historyForward.disabled =
+        navigationIndex >= highestNavigationIndex;
+}
+
+function updateBreadcrumb(file) {
+    breadcrumbCurrent.textContent = getPageTitle(file);
+}
+
+function updateActiveNavigation(file) {
+    document.querySelectorAll(".nav-link.active, .header-link.active")
+        .forEach(element => element.classList.remove("active"));
+
+    if (!file) return;
+
+    document.querySelectorAll("[data-page]").forEach(element => {
+        if (element.dataset.page === file) {
+            element.classList.add("active");
+
+            // Expand parent folders containing the active item.
+            let parent = element.parentElement;
+
+            while (parent) {
+                if (parent.classList.contains("tree-children")) {
+                    parent.classList.add("open");
+
+                    const folderButton = parent.previousElementSibling;
+                    if (folderButton) {
+                        folderButton.setAttribute("aria-expanded", "true");
+                    }
+                }
+
+                parent = parent.parentElement;
+            }
+        }
+    });
+}
+
+/* --------------------------------------------------
+   Sidebar controls
+-------------------------------------------------- */
 
 function toggleSidebar() {
     if (isMobile()) {
         const isOpen = appShell.classList.toggle("sidebar-open");
         sidebarToggle.setAttribute("aria-expanded", String(isOpen));
     } else {
-        const isCollapsed = appShell.classList.toggle("sidebar-collapsed");
-        sidebarToggle.setAttribute("aria-expanded", String(!isCollapsed));
+        const isCollapsed =
+            appShell.classList.toggle("sidebar-collapsed");
+
+        sidebarToggle.setAttribute(
+            "aria-expanded",
+            String(!isCollapsed)
+        );
     }
 }
 
@@ -72,7 +168,14 @@ function closeMobileSidebar() {
 sidebarToggle.addEventListener("click", toggleSidebar);
 sidebarBackdrop.addEventListener("click", closeMobileSidebar);
 
-/* More menu */
+/* --------------------------------------------------
+   More menu
+-------------------------------------------------- */
+
+function closeMoreMenu() {
+    moreMenu.classList.remove("open");
+    moreToggle.setAttribute("aria-expanded", "false");
+}
 
 moreToggle.addEventListener("click", event => {
     event.stopPropagation();
@@ -82,19 +185,16 @@ moreToggle.addEventListener("click", event => {
 });
 
 document.addEventListener("click", event => {
-    if (!moreMenu.contains(event.target) && !moreToggle.contains(event.target)) {
-        moreMenu.classList.remove("open");
-        moreToggle.setAttribute("aria-expanded", "false");
+    if (
+        !moreMenu.contains(event.target) &&
+        !moreToggle.contains(event.target)
+    ) {
+        closeMoreMenu();
     }
 });
 
-function closeMoreMenu() {
-    moreMenu.classList.remove("open");
-    moreToggle.setAttribute("aria-expanded", "false");
-}
-
 document.getElementById("more-home").addEventListener("click", () => {
-    showHome();
+    navigate(null);
     closeMoreMenu();
 });
 
@@ -103,12 +203,71 @@ document.getElementById("more-sidebar").addEventListener("click", () => {
     closeMoreMenu();
 });
 
-/* Home page */
+/* --------------------------------------------------
+   Browser history and navigation
+-------------------------------------------------- */
+
+function navigate(file, options = {}) {
+    const replace = options.replace === true;
+
+    const url = makePageUrl(file);
+
+    if (replace) {
+        history.replaceState(
+            { archiveIndex: navigationIndex, file },
+            "",
+            url
+        );
+    } else {
+        navigationIndex++;
+        highestNavigationIndex = navigationIndex;
+
+        history.pushState(
+            { archiveIndex: navigationIndex, file },
+            "",
+            url
+        );
+    }
+
+    updateHistoryButtons();
+    displayRoute(file);
+}
+
+function goBack() {
+    if (navigationIndex > 0) {
+        history.back();
+    }
+}
+
+function goForward() {
+    if (navigationIndex < highestNavigationIndex) {
+        history.forward();
+    }
+}
+
+historyBack.addEventListener("click", goBack);
+historyForward.addEventListener("click", goForward);
+
+window.addEventListener("popstate", event => {
+    if (event.state && Number.isInteger(event.state.archiveIndex)) {
+        navigationIndex = event.state.archiveIndex;
+    }
+
+    updateHistoryButtons();
+
+    // The URL is the source of truth when navigating Back or Forward.
+    displayRoute(getCurrentFile());
+});
+
+window.addEventListener("hashchange", () => {
+    // Hash links inside archive pages remain native browser links.
+});
+
+/* --------------------------------------------------
+   Home page
+-------------------------------------------------- */
 
 function showHome() {
-    document.querySelectorAll(".nav-link.active, .header-link.active")
-        .forEach(element => element.classList.remove("active"));
-
     content.innerHTML = `
         <section class="home-page">
             <h1>Welcome to My Archive</h1>
@@ -127,39 +286,37 @@ function showHome() {
     `;
 
     content.scrollTop = 0;
-    closeMobileSidebar();
 }
 
-homeLink.addEventListener("click", showHome);
+homeLink.addEventListener("click", () => navigate(null));
+breadcrumbHome.addEventListener("click", () => navigate(null));
 
-/* Page navigation */
+/* --------------------------------------------------
+   Page navigation
+-------------------------------------------------- */
 
 function openPage(item) {
-    document.querySelectorAll(".nav-link.active, .header-link.active")
-        .forEach(element => element.classList.remove("active"));
-
-    document.querySelectorAll(`[data-page="${item.file}"]`)
-        .forEach(element => element.classList.add("active"));
-
-    loadPage(item.file);
-    closeMobileSidebar();
-    closeMoreMenu();
+    navigate(item.file);
 }
 
 function createPageButton(item, className) {
     const button = document.createElement("button");
+
     button.className = className;
     button.type = "button";
     button.dataset.page = item.file;
 
-    button.innerHTML = `${getPageIcon(item.title)}<span>${item.title}</span>`;
+    button.innerHTML =
+        `${getPageIcon(item.title)}<span>${item.title}</span>`;
 
     button.addEventListener("click", () => openPage(item));
 
     return button;
 }
 
-/* Header navigation */
+/* --------------------------------------------------
+   Header navigation
+-------------------------------------------------- */
 
 function renderHeaderNavigation(items) {
     headerNavigation.innerHTML = "";
@@ -171,7 +328,9 @@ function renderHeaderNavigation(items) {
     });
 }
 
-/* Sidebar navigation */
+/* --------------------------------------------------
+   Sidebar tree
+-------------------------------------------------- */
 
 function renderTree(items, parent) {
     items.forEach(item => {
@@ -180,15 +339,20 @@ function renderTree(items, parent) {
 
         if (item.type === "folder") {
             const link = document.createElement("button");
+
             link.type = "button";
             link.className = "nav-link folder-link";
-            link.innerHTML = `${icons.folder}<span>${item.title}</span>`;
+            link.innerHTML =
+                `${icons.folder}<span>${item.title}</span>`;
+
+            link.setAttribute("aria-expanded", "false");
 
             const children = document.createElement("div");
             children.className = "tree-children";
 
             link.addEventListener("click", () => {
                 children.classList.toggle("open");
+
                 link.setAttribute(
                     "aria-expanded",
                     String(children.classList.contains("open"))
@@ -201,17 +365,21 @@ function renderTree(items, parent) {
             renderTree(item.children || [], children);
 
         } else if (item.type === "page") {
+            pageTitleMap.set(item.file, item.title);
+
             container.appendChild(
                 createPageButton(item, "nav-link")
             );
 
         } else if (item.type === "file") {
             const link = document.createElement("a");
+
             link.className = "nav-link";
             link.href = item.file;
             link.target = "_blank";
             link.rel = "noopener noreferrer";
-            link.innerHTML = `${icons.file}<span>${item.title}</span>`;
+            link.innerHTML =
+                `${icons.file}<span>${item.title}</span>`;
 
             container.appendChild(link);
         }
@@ -223,29 +391,38 @@ function renderTree(items, parent) {
 function renderSidebar(items) {
     navigation.innerHTML = "";
 
-    const pageSection = document.createElement("div");
-    renderTree(items, pageSection);
-    navigation.appendChild(pageSection);
-
-    const divider = document.createElement("div");
-    divider.className = "nav-section-label";
-    divider.textContent = "Archive";
-    navigation.appendChild(divider);
+    renderTree(items, navigation);
 }
 
-/* Load page content */
+/* --------------------------------------------------
+   Load page content
+-------------------------------------------------- */
 
 async function loadPage(file) {
+    const thisRequest = ++navigationToken;
+
+    if (activeRequest) {
+        activeRequest.abort();
+    }
+
+    const controller = new AbortController();
+    activeRequest = controller;
+
     try {
         content.innerHTML = "<p>Loading...</p>";
 
-        const response = await fetch(file);
+        const response = await fetch(file, {
+            signal: controller.signal,
+            cache: "no-cache"
+        });
 
         if (!response.ok) {
-            throw new Error("Page not found");
+            throw new Error(`Page not found (${response.status})`);
         }
 
         const html = await response.text();
+
+        if (thisRequest !== navigationToken) return;
 
         content.innerHTML = html;
 
@@ -253,6 +430,8 @@ async function loadPage(file) {
         const scripts = Array.from(content.querySelectorAll("script"));
 
         for (const oldScript of scripts) {
+            if (thisRequest !== navigationToken) return;
+
             const newScript = document.createElement("script");
 
             for (const attribute of oldScript.attributes) {
@@ -266,35 +445,98 @@ async function loadPage(file) {
                 ).href;
 
                 newScript.async = false;
+
+                await new Promise((resolve, reject) => {
+                    newScript.onload = resolve;
+                    newScript.onerror = reject;
+                    oldScript.replaceWith(newScript);
+                });
+
             } else {
                 newScript.textContent = oldScript.textContent;
+                oldScript.replaceWith(newScript);
             }
-
-            oldScript.replaceWith(newScript);
         }
+
+        if (thisRequest !== navigationToken) return;
 
         content.scrollTop = 0;
 
     } catch (error) {
-        console.error(error);
-        content.innerHTML =
-            "<h2>Unable to load page</h2><p>Please try again.</p>";
+        if (error.name === "AbortError") return;
+
+        if (thisRequest !== navigationToken) return;
+
+        console.error("Page loading error:", error);
+
+        content.innerHTML = `
+            <h2>Unable to load page</h2>
+            <p>Please check the page address or try again.</p>
+        `;
     }
 }
 
-window.loadArchivePage = function(file) {
-    loadPage(file);
+/* --------------------------------------------------
+   Central route display
+-------------------------------------------------- */
+
+function displayRoute(file) {
+    updateActiveNavigation(file);
+    updateBreadcrumb(file);
+
     closeMobileSidebar();
     closeMoreMenu();
+
+    if (!file) {
+        // Cancel a page request if the user returns Home.
+        navigationToken++;
+
+        if (activeRequest) {
+            activeRequest.abort();
+            activeRequest = null;
+        }
+
+        showHome();
+        return;
+    }
+
+    loadPage(file);
+}
+
+/*
+ * Public navigation API.
+ * Search results and other page scripts can use this.
+ */
+window.ArchiveApp = {
+    navigate(file, options = {}) {
+        navigate(file, options);
+    },
+
+    home() {
+        navigate(null);
+    },
+
+    getCurrentPage() {
+        return getCurrentFile();
+    }
 };
 
-/* Initialize */
+/*
+ * Keep compatibility with the existing Search page.
+ */
+window.loadArchivePage = function(file) {
+    navigate(file);
+};
+
+/* --------------------------------------------------
+   Initialize navigation data and restore current page
+-------------------------------------------------- */
 
 async function initialize() {
     try {
         const [pagesResponse, archiveResponse] = await Promise.all([
-            fetch("data/pages.json"),
-            fetch("data/archive-index.json")
+            fetch("data/pages.json", { cache: "no-cache" }),
+            fetch("data/archive-index.json", { cache: "no-cache" })
         ]);
 
         if (!pagesResponse.ok || !archiveResponse.ok) {
@@ -308,6 +550,24 @@ async function initialize() {
             item => item.type === "page"
         );
 
+        // Build title lookup for breadcrumb labels.
+        pageTitleMap.clear();
+
+        function collectTitles(items) {
+            items.forEach(item => {
+                if (item.type === "page" && item.file) {
+                    pageTitleMap.set(item.file, item.title);
+                }
+
+                if (item.type === "folder") {
+                    collectTitles(item.children || []);
+                }
+            });
+        }
+
+        collectTitles(pageItems);
+        collectTitles(archiveData.navigation || []);
+
         renderHeaderNavigation(pageItems);
 
         const sidebarItems = [
@@ -315,22 +575,45 @@ async function initialize() {
             {
                 title: "Archive",
                 type: "folder",
-                children: archiveData.navigation
+                children: archiveData.navigation || []
             }
         ];
 
-        renderTree(sidebarItems, navigation);
+        renderSidebar(sidebarItems);
+
+        // Establish the first history entry without adding a new one.
+        const initialFile = getCurrentFile();
+
+        navigationIndex = 0;
+        highestNavigationIndex = 0;
+
+        history.replaceState(
+            { archiveIndex: 0, file: initialFile },
+            "",
+            makePageUrl(initialFile)
+        );
+
+        updateHistoryButtons();
+
+        // Restore the requested page, or show Home.
+        displayRoute(initialFile);
 
     } catch (error) {
-        console.error(error);
+        console.error("Initialization error:", error);
+
         navigation.innerHTML = "Unable to load navigation.";
         headerNavigation.innerHTML = "";
+
+        content.innerHTML = `
+            <h2>Archive could not be initialized</h2>
+            <p>Please refresh the page and try again.</p>
+        `;
     }
 }
 
-/* Theme management */
-
-const themeToggle = document.getElementById("theme-toggle");
+/* --------------------------------------------------
+   Theme management
+-------------------------------------------------- */
 
 function getPreferredTheme() {
     const savedTheme = localStorage.getItem("archive-theme");
@@ -363,5 +646,9 @@ themeToggle.addEventListener("click", () => {
 
     applyTheme(newTheme, true);
 });
+
+/* --------------------------------------------------
+   Start application
+-------------------------------------------------- */
 
 initialize();
