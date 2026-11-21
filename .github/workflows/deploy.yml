@@ -34,19 +34,29 @@ jobs:
 
       - name: Combine website and archive
         run: |
-          rm -rf archive
-          mkdir -p archive
+          rm -rf archive storage-data
+          mkdir -p archive storage-data
 
           if [ ! -d storage/archive ]; then
             echo "Storage repository does not contain archive/."
             exit 1
           fi
 
+          if [ ! -d storage/data ]; then
+            echo "Storage repository does not contain data/."
+            exit 1
+          fi
+
           cp -a storage/archive/. archive/
+          cp -a storage/data/. storage-data/
+
           rm -rf storage
 
-      - name: Generate archive index
+      - name: Generate archive indexes
         run: node scripts/generate-index.mjs
+
+      - name: Remove temporary storage metadata
+        run: rm -rf storage-data
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
@@ -63,7 +73,6 @@ jobs:
     permissions:
       pages: write
       id-token: write
-
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
