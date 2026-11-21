@@ -550,7 +550,7 @@ body {
     min-height: var(--toolbar-height);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 12px;
     padding: 0 24px;
     background: var(--surface-bg);
@@ -580,6 +580,10 @@ body {
     color: var(--text-color);
     font: inherit;
     cursor: pointer;
+}
+
+.history-controls #history-back {
+  margin-left: auto;
 }
 
 .breadcrumb button {
