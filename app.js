@@ -73,7 +73,7 @@ function isMobile() {
 }
 
 function getPageTitle(file) {
-    if (!file) return "Home";
+    if (!file) return "";
 
     if (pageTitleMap.has(file)) {
         return pageTitleMap.get(file);
