@@ -13,6 +13,18 @@
     <header class="header">
 
         <div class="header-left">
+
+            <button
+                class="icon-button sidebar-toggle"
+                id="sidebar-toggle"
+                aria-label="Toggle sidebar"
+                aria-expanded="true"
+                title="Toggle sidebar">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 6h18M3 12h18M3 18h18"/>
+                </svg>
+            </button>
+            
             <button class="logo" id="home-link">MY ARCHIVE</button>
         </div>
 
@@ -43,18 +55,7 @@
 
     <nav class="page-toolbar" id="page-toolbar" aria-label="Page navigation">
 
-        <button
-                class="icon-button sidebar-toggle"
-                id="sidebar-toggle"
-                aria-label="Toggle sidebar"
-                aria-expanded="true"
-                title="Toggle sidebar">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M3 6h18M3 12h18M3 18h18"/>
-                </svg>
-        </button>
-
-        <div class="breadcrumb" id="breadcrumb">
+    <div class="breadcrumb" id="breadcrumb">
         <button type="button" id="breadcrumb-home">Home</button>
         <span aria-hidden="true">›</span>
         <span id="breadcrumb-current">Home</span>
