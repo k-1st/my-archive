@@ -116,6 +116,7 @@ body {
     letter-spacing: 1px;
     cursor: pointer;
     white-space: nowrap;
+    margin-left: 12px;
 }
 
 .icon-button {
