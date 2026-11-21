@@ -246,12 +246,39 @@ async function loadPage(file) {
         }
 
         const html = await response.text();
+
         content.innerHTML = html;
+
+        // Activate scripts included in the loaded HTML.
+        const scripts = Array.from(content.querySelectorAll("script"));
+
+        for (const oldScript of scripts) {
+            const newScript = document.createElement("script");
+
+            for (const attribute of oldScript.attributes) {
+                newScript.setAttribute(attribute.name, attribute.value);
+            }
+
+            if (oldScript.hasAttribute("src")) {
+                newScript.src = new URL(
+                    oldScript.getAttribute("src"),
+                    response.url
+                ).href;
+
+                newScript.async = false;
+            } else {
+                newScript.textContent = oldScript.textContent;
+            }
+
+            oldScript.replaceWith(newScript);
+        }
+
         content.scrollTop = 0;
 
     } catch (error) {
         console.error(error);
-        content.innerHTML = "<h2>Unable to load page</h2><p>Please try again.</p>";
+        content.innerHTML =
+            "<h2>Unable to load page</h2><p>Please try again.</p>";
     }
 }
 
