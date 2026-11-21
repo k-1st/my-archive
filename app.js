@@ -295,4 +295,40 @@ async function initialize() {
     }
 }
 
+/* Theme management */
+
+const themeToggle = document.getElementById("theme-toggle");
+
+function getPreferredTheme() {
+    const savedTheme = localStorage.getItem("archive-theme");
+
+    if (savedTheme) {
+        return savedTheme;
+    }
+
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+}
+
+function applyTheme(theme, save = false) {
+    document.documentElement.dataset.theme = theme;
+
+    themeToggle.textContent =
+        theme === "dark" ? "Light mode" : "Dark mode";
+
+    if (save) {
+        localStorage.setItem("archive-theme", theme);
+    }
+}
+
+applyTheme(getPreferredTheme());
+
+themeToggle.addEventListener("click", () => {
+    const currentTheme = document.documentElement.dataset.theme;
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+    applyTheme(newTheme, true);
+});
+
 initialize();
