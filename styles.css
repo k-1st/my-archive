@@ -131,6 +131,17 @@ body {
     position: relative;
 }
 
+/* Footer */
+
+.footer {
+    margin-top: 60px;
+    padding: 20px 0;
+    border-top: 1px solid #e5e5e5;
+    color: #777;
+    font-size: 13px;
+    text-align: center;
+}
+
 /* More menu */
 
 .more-menu {
