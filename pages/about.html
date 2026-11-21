@@ -1,2 +1,152 @@
-<h1>About</h1>
-<p>Information about this archive.</p>
+<section class="metadata-page">
+    <header class="metadata-header">
+        <span class="metadata-label">ABOUT THIS ARCHIVE</span>
+        <h1 id="about-title">Loading...</h1>
+        <p id="about-description"></p>
+    </header>
+
+    <div class="metadata-details">
+        <div class="metadata-row">
+            <span>Date</span>
+            <strong id="about-date">—</strong>
+        </div>
+
+        <div class="metadata-row">
+            <span>Tags</span>
+            <div id="about-tags">—</div>
+        </div>
+
+        <div class="metadata-row">
+            <span>Keywords</span>
+            <div id="about-keywords">—</div>
+        </div>
+
+        <div class="metadata-row">
+            <span>Featured</span>
+            <strong id="about-featured">—</strong>
+        </div>
+
+        <div class="metadata-row">
+            <span>Search text</span>
+            <p id="about-search-text">—</p>
+        </div>
+    </div>
+
+    <p id="about-status" role="status"></p>
+</section>
+
+<style>
+.metadata-page {
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+.metadata-header {
+    margin-bottom: 32px;
+}
+
+.metadata-label {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    opacity: 0.65;
+}
+
+.metadata-header h1 {
+    margin: 10px 0;
+}
+
+.metadata-details {
+    border-top: 1px solid var(--border-color, #ccc);
+}
+
+.metadata-row {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-color, #ccc);
+}
+
+.metadata-row > span {
+    opacity: 0.65;
+}
+
+.metadata-row p {
+    margin: 0;
+}
+
+.metadata-tag {
+    display: inline-block;
+    margin: 2px 5px 2px 0;
+    padding: 4px 9px;
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+@media (max-width: 500px) {
+    .metadata-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+}
+</style>
+
+<script>
+(async function () {
+    const status = document.getElementById("about-status");
+
+    function setText(id, value) {
+        document.getElementById(id).textContent = value || "—";
+    }
+
+    function renderTags(id, values) {
+        const container = document.getElementById(id);
+        container.replaceChildren();
+
+        if (!Array.isArray(values) || values.length === 0) {
+            container.textContent = "—";
+            return;
+        }
+
+        values.forEach(value => {
+            const tag = document.createElement("span");
+            tag.className = "metadata-tag";
+            tag.textContent = value;
+            container.appendChild(tag);
+        });
+    }
+
+    try {
+        const response = await fetch("data/about.json");
+
+        if (!response.ok) {
+            throw new Error(
+                `Could not load data/about.json (${response.status})`
+            );
+        }
+
+        const metadata = await response.json();
+
+        setText("about-title", metadata.title);
+        setText("about-description", metadata.description);
+        setText("about-date", metadata.date);
+        setText(
+            "about-featured",
+            metadata.featured === true ? "Yes" : "No"
+        );
+        setText("about-search-text", metadata.searchText);
+
+        renderTags("about-tags", metadata.tags);
+        renderTags("about-keywords", metadata.keywords);
+
+        status.textContent = "Metadata loaded successfully.";
+
+    } catch (error) {
+        console.error("About page metadata error:", error);
+
+        setText("about-title", "Unable to load About metadata");
+        status.textContent = error.message;
+    }
+})();
+</script>
