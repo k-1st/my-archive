@@ -36,6 +36,8 @@ const icons = {
     </svg>`
 };
 
+document.getElementById("copyright-year").textContent = new Date().getFullYear();
+
 function getPageIcon(title) {
     const name = title.toLowerCase();
 
