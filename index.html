@@ -31,17 +31,19 @@
     <nav class="page-toolbar" id="page-toolbar" aria-label="Page navigation">
 
     <div class="breadcrumb" id="breadcrumb">
-        <button type="button" id="breadcrumb-home">Home</button>
+        <button type="button" id="breadcrumb-home" hidden></button>
         <span aria-hidden="true">›</span>
-        <span id="breadcrumb-current">Home</span>
+
+        <button type="button" id="history-back" title="Go back" disabled>
+            Back
+        </button>
+        
+        <span id="breadcrumb-current"></span>
     </div>
 
     <div class="history-controls">
-        <button type="button" id="history-back" title="Go back" disabled>
-            ← Back
-        </button>
-        <button type="button" id="history-forward" title="Go forward" disabled>
-            Forward →
+        <button type="button" id="history-forward" title="Go forward" disabled hidden>
+            Next
         </button>
     </div>
     </nav>
