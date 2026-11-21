@@ -1,2 +1,610 @@
-<h1>Search</h1>
-<p>Welcome to our archive website.</p>
+<section class="archive-search-page">
+
+    <header class="search-header">
+        <h1 id="search-title">Search Archive</h1>
+        <p id="search-description">
+            Find items in the archive.
+        </p>
+    </header>
+
+    <div class="search-controls">
+
+        <label class="search-input-wrap">
+            <span class="sr-only">Search archive</span>
+            <input
+                type="search"
+                id="archive-query"
+                placeholder="Search titles, descriptions, tags, keywords..."
+                autocomplete="off"
+            >
+        </label>
+
+        <div class="search-filter-row">
+
+            <label class="search-filter">
+                <span>Year</span>
+                <select id="archive-year">
+                    <option value="">All years</option>
+                </select>
+            </label>
+
+            <label class="search-filter">
+                <span>Sort by</span>
+                <select id="archive-sort">
+                    <option value="title">Alphabetical</option>
+                    <option value="newest">Newest first</option>
+                    <option value="oldest">Oldest first</option>
+                </select>
+            </label>
+
+        </div>
+
+        <div class="alphabet-section">
+            <div class="alphabet-heading">
+                <strong>Browse alphabetically</strong>
+                <button type="button" id="alphabet-clear">
+                    Clear letter
+                </button>
+            </div>
+
+            <div id="alphabet-filter" class="alphabet-filter">
+                <button type="button" data-letter="" class="active">
+                    All
+                </button>
+                <button type="button" data-letter="#">
+                    0–9
+                </button>
+                <button type="button" data-letter="A">A</button>
+                <button type="button" data-letter="B">B</button>
+                <button type="button" data-letter="C">C</button>
+                <button type="button" data-letter="D">D</button>
+                <button type="button" data-letter="E">E</button>
+                <button type="button" data-letter="F">F</button>
+                <button type="button" data-letter="G">G</button>
+                <button type="button" data-letter="H">H</button>
+                <button type="button" data-letter="I">I</button>
+                <button type="button" data-letter="J">J</button>
+                <button type="button" data-letter="K">K</button>
+                <button type="button" data-letter="L">L</button>
+                <button type="button" data-letter="M">M</button>
+                <button type="button" data-letter="N">N</button>
+                <button type="button" data-letter="O">O</button>
+                <button type="button" data-letter="P">P</button>
+                <button type="button" data-letter="Q">Q</button>
+                <button type="button" data-letter="R">R</button>
+                <button type="button" data-letter="S">S</button>
+                <button type="button" data-letter="T">T</button>
+                <button type="button" data-letter="U">U</button>
+                <button type="button" data-letter="V">V</button>
+                <button type="button" data-letter="W">W</button>
+                <button type="button" data-letter="X">X</button>
+                <button type="button" data-letter="Y">Y</button>
+                <button type="button" data-letter="Z">Z</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="search-results-heading">
+        <span id="search-count">Loading archive...</span>
+        <button type="button" id="search-reset">
+            Reset filters
+        </button>
+    </div>
+
+    <div id="archive-results" class="archive-results"></div>
+
+    <p id="search-status" role="status" aria-live="polite"></p>
+
+</section>
+
+<style>
+.archive-search-page {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.search-header {
+    margin-bottom: 28px;
+}
+
+.search-header h1 {
+    margin-bottom: 8px;
+}
+
+.search-header p {
+    opacity: 0.7;
+}
+
+.search-controls {
+    display: grid;
+    gap: 22px;
+    margin-bottom: 28px;
+}
+
+.search-input-wrap input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 13px 15px;
+    font: inherit;
+    color: inherit;
+    background: var(--input-bg, transparent);
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 8px;
+}
+
+.search-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.search-filter {
+    display: grid;
+    gap: 7px;
+    min-width: 140px;
+    font-size: 13px;
+}
+
+.search-filter select {
+    padding: 9px 12px;
+    font: inherit;
+    color: inherit;
+    background: var(--input-bg, transparent);
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 6px;
+}
+
+.alphabet-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+
+.alphabet-heading button,
+.search-results-heading button {
+    color: inherit;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    font: inherit;
+}
+
+.alphabet-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.alphabet-filter button {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 7px;
+    color: inherit;
+    background: transparent;
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.alphabet-filter button:hover,
+.alphabet-filter button.active {
+    background: var(--accent-bg, #444);
+    color: var(--accent-text, white);
+    border-color: transparent;
+}
+
+.search-results-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--border-color, #ccc);
+    font-size: 13px;
+}
+
+.archive-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.search-result-card {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 9px;
+    background: var(--card-bg, transparent);
+}
+
+.search-result-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--sidebar-bg, #eee);
+}
+
+.search-result-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.search-result-placeholder {
+    font-size: 34px;
+    opacity: 0.35;
+}
+
+.search-result-body {
+    padding: 15px;
+}
+
+.search-result-date {
+    font-size: 12px;
+    opacity: 0.65;
+}
+
+.search-result-title {
+    display: block;
+    margin: 7px 0;
+    padding: 0;
+    text-align: left;
+    font: inherit;
+    font-weight: 600;
+    color: inherit;
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.search-result-title:hover {
+    text-decoration: underline;
+}
+
+.search-result-description {
+    margin: 8px 0;
+    font-size: 13px;
+    line-height: 1.6;
+    opacity: 0.75;
+}
+
+.search-result-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 12px;
+}
+
+.search-result-tag {
+    padding: 3px 8px;
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 20px;
+    font-size: 11px;
+}
+
+.search-empty {
+    grid-column: 1 / -1;
+    padding: 35px 15px;
+    text-align: center;
+    opacity: 0.7;
+}
+
+#search-status {
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (max-width: 600px) {
+    .archive-results {
+        grid-template-columns: 1fr;
+    }
+
+    .search-filter {
+        flex: 1;
+        min-width: 120px;
+    }
+}
+</style>
+
+<script>
+(async function () {
+    const queryInput = document.getElementById("archive-query");
+    const yearSelect = document.getElementById("archive-year");
+    const sortSelect = document.getElementById("archive-sort");
+    const alphabet = document.getElementById("alphabet-filter");
+    const results = document.getElementById("archive-results");
+    const count = document.getElementById("search-count");
+    const status = document.getElementById("search-status");
+
+    let archiveItems = [];
+    let selectedLetter = "";
+
+    function normalize(value) {
+        return String(value || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLocaleLowerCase();
+    }
+
+    function getLetter(title) {
+        const first = normalize(title).charAt(0).toUpperCase();
+
+        if (/[0-9]/.test(first)) return "#";
+        if (/[A-Z]/.test(first)) return first;
+
+        return "#";
+    }
+
+    function getSearchableText(item) {
+        return [
+            item.title,
+            item.description,
+            item.folder,
+            item.filename,
+            item.searchText,
+            ...(item.tags || []),
+            ...(item.keywords || [])
+        ].join(" ");
+    }
+
+    function populateYears() {
+        const years = [
+            ...new Set(
+                archiveItems
+                    .map(item => item.date)
+                    .filter(date => /^\d{4}-\d{2}-\d{2}$/.test(date))
+                    .map(date => date.slice(0, 4))
+            )
+        ].sort((a, b) => b.localeCompare(a));
+
+        years.forEach(year => {
+            const option = document.createElement("option");
+            option.value = year;
+            option.textContent = year;
+            yearSelect.appendChild(option);
+        });
+    }
+
+    function createTag(text) {
+        const tag = document.createElement("span");
+        tag.className = "search-result-tag";
+        tag.textContent = text;
+        return tag;
+    }
+
+    function createCard(item) {
+        const card = document.createElement("article");
+        card.className = "search-result-card";
+
+        const imageArea = document.createElement("div");
+        imageArea.className = "search-result-image";
+
+        if (item.thumbnail) {
+            const image = document.createElement("img");
+            image.alt = item.title || "Archive thumbnail";
+            image.loading = "lazy";
+
+            image.addEventListener("error", () => {
+                imageArea.replaceChildren();
+
+                const placeholder = document.createElement("span");
+                placeholder.className = "search-result-placeholder";
+                placeholder.textContent = "▧";
+
+                imageArea.appendChild(placeholder);
+            }, { once: true });
+
+            image.src = new URL(
+                item.thumbnail,
+                document.baseURI
+            ).href;
+
+            imageArea.appendChild(image);
+        } else {
+            const placeholder = document.createElement("span");
+            placeholder.className = "search-result-placeholder";
+            placeholder.textContent = "▧";
+            imageArea.appendChild(placeholder);
+        }
+
+        const body = document.createElement("div");
+        body.className = "search-result-body";
+
+        const date = document.createElement("div");
+        date.className = "search-result-date";
+        date.textContent = item.date || "Date not specified";
+
+        const title = document.createElement("button");
+        title.type = "button";
+        title.className = "search-result-title";
+        title.textContent = item.title || item.filename || "Untitled";
+
+        title.addEventListener("click", () => {
+            if (typeof window.loadArchivePage === "function") {
+                window.loadArchivePage(item.file);
+            } else {
+                window.location.href = item.file;
+            }
+        });
+
+        const description = document.createElement("p");
+        description.className = "search-result-description";
+        description.textContent = item.description || "";
+
+        const tags = document.createElement("div");
+        tags.className = "search-result-tags";
+
+        [...(item.tags || []), ...(item.keywords || [])]
+            .slice(0, 6)
+            .forEach(value => tags.appendChild(createTag(value)));
+
+        body.append(date, title, description, tags);
+        card.append(imageArea, body);
+
+        return card;
+    }
+
+    function renderResults() {
+        const query = normalize(queryInput.value);
+        const selectedYear = yearSelect.value;
+        const sort = sortSelect.value;
+
+        let filtered = archiveItems.filter(item => {
+            const matchesText =
+                !query || normalize(getSearchableText(item)).includes(query);
+
+            const matchesYear =
+                !selectedYear || (item.date || "").startsWith(selectedYear);
+
+            const matchesLetter =
+                !selectedLetter ||
+                getLetter(item.title || item.filename) === selectedLetter;
+
+            return matchesText && matchesYear && matchesLetter;
+        });
+
+        filtered.sort((a, b) => {
+            if (sort === "newest") {
+                return (b.date || "").localeCompare(a.date || "");
+            }
+
+            if (sort === "oldest") {
+                return (a.date || "").localeCompare(b.date || "");
+            }
+
+            return (a.title || "").localeCompare(
+                b.title || "",
+                undefined,
+                { numeric: true, sensitivity: "base" }
+            );
+        });
+
+        results.replaceChildren();
+
+        count.textContent =
+            `${filtered.length} of ${archiveItems.length} items`;
+
+        if (filtered.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "search-empty";
+            empty.textContent = "No archive items found. Try changing your search or filters.";
+            results.appendChild(empty);
+            return;
+        }
+
+        filtered.forEach(item => {
+            results.appendChild(createCard(item));
+        });
+    }
+
+    alphabet.addEventListener("click", event => {
+        const button = event.target.closest("button[data-letter]");
+
+        if (!button) return;
+
+        selectedLetter = button.dataset.letter;
+
+        alphabet.querySelectorAll("button").forEach(item => {
+            item.classList.toggle("active", item === button);
+            item.setAttribute("aria-pressed", String(item === button));
+        });
+
+        renderResults();
+    });
+
+    document.getElementById("alphabet-clear").addEventListener("click", () => {
+        selectedLetter = "";
+
+        alphabet.querySelectorAll("button").forEach(button => {
+            const active = button.dataset.letter === "";
+            button.classList.toggle("active", active);
+            button.setAttribute("aria-pressed", String(active));
+        });
+
+        renderResults();
+    });
+
+    queryInput.addEventListener("input", renderResults);
+    yearSelect.addEventListener("change", renderResults);
+    sortSelect.addEventListener("change", renderResults);
+
+    document.getElementById("search-reset").addEventListener("click", () => {
+        queryInput.value = "";
+        yearSelect.value = "";
+        sortSelect.value = "title";
+        selectedLetter = "";
+
+        alphabet.querySelectorAll("button").forEach(button => {
+            const active = button.dataset.letter === "";
+            button.classList.toggle("active", active);
+            button.setAttribute("aria-pressed", String(active));
+        });
+
+        renderResults();
+    });
+
+    try {
+        const [indexResponse, pageResponse] = await Promise.all([
+            fetch(new URL("data/archive-search.json", document.baseURI)),
+            fetch(new URL("data/search.json", document.baseURI))
+        ]);
+
+        if (!indexResponse.ok) {
+            throw new Error(
+                `Archive search index could not be loaded (${indexResponse.status}).`
+            );
+        }
+
+        const indexData = await indexResponse.json();
+        archiveItems = Array.isArray(indexData.items)
+            ? indexData.items
+            : [];
+
+        if (pageResponse.ok) {
+            const pageMetadata = await pageResponse.json();
+
+            if (pageMetadata.title) {
+                document.getElementById("search-title").textContent =
+                    pageMetadata.title;
+            }
+
+            if (pageMetadata.description) {
+                document.getElementById("search-description").textContent =
+                    pageMetadata.description;
+            }
+        }
+
+        populateYears();
+        renderResults();
+
+        status.textContent =
+            `Search ready. ${archiveItems.length} archive items loaded.`;
+
+    } catch (error) {
+        console.error("Search page error:", error);
+        count.textContent = "Search unavailable";
+        status.textContent = error.message;
+    }
+})();
+</script>
