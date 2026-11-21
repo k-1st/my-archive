@@ -182,7 +182,6 @@ body {
     min-width: var(--sidebar-width);
     padding: 20px;
     overflow-y: auto;
-    background: var(--sidebar-bg);
     border-right: 1px solid var(--sidebar-border);
     transition: width 0.25s ease, min-width 0.25s ease, padding 0.25s ease;
 }
