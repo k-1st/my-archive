@@ -72,18 +72,24 @@ function isMobile() {
     return window.matchMedia("(max-width: 700px)").matches;
 }
 
+function formatDisplayName(value) {
+    return String(value || "")
+        .replace(/[-_]+/g, " ")
+        .replace(/\b\w/g, letter => letter.toUpperCase());
+}
+
 function getPageTitle(file) {
     if (!file) return "";
 
     if (pageTitleMap.has(file)) {
-        return pageTitleMap.get(file);
+        return formatDisplayName(pageTitleMap.get(file));
     }
 
     const filename = file.split("/").pop() || "";
-    return decodeURIComponent(filename)
-        .replace(/\.html?$/i, "")
-        .replace(/[-_]/g, " ")
-        .replace(/\b\w/g, letter => letter.toUpperCase());
+
+    return formatDisplayName(
+        decodeURIComponent(filename).replace(/\.html?$/i, "")
+    );
 }
 
 function getCurrentFile() {
@@ -307,7 +313,7 @@ function createPageButton(item, className) {
     button.dataset.page = item.file;
 
     button.innerHTML =
-        `${getPageIcon(item.title)}<span>${item.title}</span>`;
+        `${getPageIcon(item.title)}<span>${formatDisplayName(item.title)}</span>`;
 
     button.addEventListener("click", () => openPage(item));
 
@@ -343,7 +349,7 @@ function renderTree(items, parent) {
             link.type = "button";
             link.className = "nav-link folder-link";
             link.innerHTML =
-                `${icons.folder}<span>${item.title}</span>`;
+                `${icons.folder}<span>${formatDisplayName(item.title)}</span>`;
 
             link.setAttribute("aria-expanded", "false");
 
