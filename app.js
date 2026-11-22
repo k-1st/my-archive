@@ -364,27 +364,8 @@ window.addEventListener("hashchange", () => {
 /* --------------------------------------------------
    Home page
 -------------------------------------------------- */
-
 function showHome() {
-  content.innerHTML = `
-    <section class="home-page">
-        <h1>Welcome to ${escapeHTML(siteSettings.siteName)}</h1>
-
-        <p>${escapeHTML(siteSettings.description)}</p>
-
-        <div class="home-section">
-            <h2>Featured</h2>
-            <p>Featured archive content will appear here.</p>
-        </div>
-
-        <div class="home-section">
-            <h2>Recently added</h2>
-            <p>Your latest additions will appear here.</p>
-        </div>
-    </section>
-  `;
-
-    content.scrollTop = 0;
+    loadPage("home.html");
 }
 
 homeLink.addEventListener("click", () => navigate(null));
