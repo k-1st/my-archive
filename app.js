@@ -365,7 +365,7 @@ window.addEventListener("hashchange", () => {
    Home page
 -------------------------------------------------- */
 function showHome() {
-    loadPage("home.html");
+    loadPage("pages/home.html");
 }
 
 homeLink.addEventListener("click", () => navigate(null));
