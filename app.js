@@ -3,6 +3,9 @@ const navigation = document.getElementById("navigation");
 const headerNavigation = document.getElementById("header-navigation");
 const content = document.getElementById("page-content");
 
+const siteNameElement = document.getElementById("site-name");
+const footerSiteNameElement = document.getElementById("footer-site-name");
+
 const sidebarToggle = document.getElementById("sidebar-toggle");
 const sidebarBackdrop = document.getElementById("sidebar-backdrop");
 const moreToggle = document.getElementById("more-toggle");
@@ -15,6 +18,14 @@ const historyBack = document.getElementById("history-back");
 const historyForward = document.getElementById("history-forward");
 
 const themeToggle = document.getElementById("theme-toggle");
+
+let siteSettings = {
+    siteName: "My Archive",
+    title: "My Archive",
+    description: "Your personal collection of archived content, organized in one place.",
+    language: "en",
+    logo: ""
+};
 
 let pageItems = [];
 let pageTitleMap = new Map();
@@ -76,6 +87,86 @@ function formatDisplayName(value) {
     return String(value || "")
         .replace(/[-_]+/g, " ")
         .replace(/\b\w/g, letter => letter.toUpperCase());
+}
+
+function escapeHTML(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+function applySiteSettings(settings) {
+    siteSettings = {
+        ...siteSettings,
+        ...settings
+    };
+
+    const siteName = siteSettings.siteName || "My Archive";
+
+    siteNameElement.textContent = siteName;
+    siteNameElement.hidden = false;
+
+    footerSiteNameElement.textContent = siteName;
+
+    document.title = siteSettings.title || siteName;
+
+    if (siteSettings.language) {
+        document.documentElement.lang = siteSettings.language;
+    }
+
+    homeLink.setAttribute(
+        "aria-label",
+        `Go to ${siteName} home`
+    );
+
+    const existingLogo = homeLink.querySelector(".site-logo-image");
+
+    if (existingLogo) {
+        existingLogo.remove();
+    }
+
+    const logoPath = siteSettings.logo || "";
+
+    if (logoPath) {
+        const image = document.createElement("img");
+
+        image.className = "site-logo-image";
+        image.alt = siteName;
+
+        image.addEventListener("error", () => {
+            image.remove();
+            siteNameElement.hidden = false;
+        }, { once: true });
+
+        homeLink.insertBefore(image, siteNameElement);
+        siteNameElement.hidden = true;
+
+        image.src = logoPath;
+    }
+}
+
+async function loadSiteSettings() {
+    try {
+        const response = await fetch("data/site.json", {
+            cache: "no-cache"
+        });
+
+        if (!response.ok) {
+            return;
+        }
+
+        const settings = await response.json();
+
+        if (settings && typeof settings === "object") {
+            applySiteSettings(settings);
+        }
+
+    } catch (error) {
+        console.warn("Unable to load site settings:", error);
+    }
 }
 
 function getPageTitle(file) {
@@ -274,22 +365,23 @@ window.addEventListener("hashchange", () => {
 -------------------------------------------------- */
 
 function showHome() {
-    content.innerHTML = `
-        <section class="home-page">
-            <h1>Welcome to My Archive</h1>
-            <p>Your personal collection of archived content, organized in one place.</p>
+  content.innerHTML = `
+    <section class="home-page">
+        <h1>Welcome to ${escapeHTML(siteSettings.siteName)}</h1>
 
-            <div class="home-section">
-                <h2>Featured</h2>
-                <p>Featured archive content will appear here.</p>
-            </div>
+        <p>${escapeHTML(siteSettings.description)}</p>
 
-            <div class="home-section">
-                <h2>Recently added</h2>
-                <p>Your latest additions will appear here.</p>
-            </div>
-        </section>
-    `;
+        <div class="home-section">
+            <h2>Featured</h2>
+            <p>Featured archive content will appear here.</p>
+        </div>
+
+        <div class="home-section">
+            <h2>Recently added</h2>
+            <p>Your latest additions will appear here.</p>
+        </div>
+    </section>
+  `;
 
     content.scrollTop = 0;
 }
@@ -540,10 +632,14 @@ window.loadArchivePage = function(file) {
 
 async function initialize() {
     try {
+        const siteSettingsPromise = loadSiteSettings();
+
         const [pagesResponse, archiveResponse] = await Promise.all([
             fetch("data/pages.json", { cache: "no-cache" }),
             fetch("data/archive-index.json", { cache: "no-cache" })
         ]);
+
+        await siteSettingsPromise;
 
         if (!pagesResponse.ok || !archiveResponse.ok) {
             throw new Error("Unable to load navigation data");
