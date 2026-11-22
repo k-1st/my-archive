@@ -56,6 +56,9 @@ jobs:
 
           rm -rf storage
 
+      - name: Apply site identity settings
+        run: node scripts/apply-site-settings.mjs
+
       - name: Generate archive indexes
         run: node scripts/generate-index.mjs
 
