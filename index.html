@@ -3,7 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>My Archive</title>
+    <meta name="description" content="Your personal collection of archived content, organized in one place.">
+
+    <link id="site-favicon" rel="icon" href="">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="My Archive">
+    <meta property="og:title" content="My Archive">
+    <meta property="og:description" content="Your personal collection of archived content, organized in one place.">
+    <meta property="og:image" content="">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="My Archive">
+    <meta name="twitter:description" content="Your personal collection of archived content, organized in one place.">
+    <meta name="twitter:image" content="">
+
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,7 +29,9 @@
     <header class="header">
 
         <div class="header-left">
-            <button class="logo" id="home-link">MY ARCHIVE</button>
+            <button class="logo" id="home-link" aria-label="Go to home">
+                <span id="site-name">MY ARCHIVE</span>
+            </button>
         </div>
         
         <nav class="header-navigation" id="header-navigation"></nav>
