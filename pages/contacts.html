@@ -1,87 +1,59 @@
 <section class="contact-page" id="contact-page">
-
-    <header class="contact-page-header">
+    <header class="contact-header">
         <p class="contact-eyebrow">CONTACT</p>
         <h1 id="contact-heading">Get in Touch</h1>
-        <p id="contact-intro"></p>
+        <p id="contact-intro">
+            Contact information and ways to reach the archive owner.
+        </p>
     </header>
 
     <div id="contact-content" aria-live="polite">
-        <p>Loading contact information...</p>
+        <p class="contact-muted">Loading contact information...</p>
     </div>
-
 </section>
 
 <script>
 (function () {
     const root = document.getElementById("contact-page");
-    if (!root) return;
+    if (!root || root.dataset.initialized === "true") return;
+    root.dataset.initialized = "true";
 
     const content = root.querySelector("#contact-content");
     const heading = root.querySelector("#contact-heading");
     const intro = root.querySelector("#contact-intro");
 
-    function text(value) {
-        return typeof value === "string" ? value.trim() : "";
+    function value(input) {
+        return typeof input === "string" ? input.trim() : "";
     }
 
-    function safeExternalUrl(value) {
+    function element(tag, className, contentText) {
+        const node = document.createElement(tag);
+        if (className) node.className = className;
+        if (contentText !== undefined) node.textContent = contentText;
+        return node;
+    }
+
+    function safeUrl(input, allowed) {
+        const raw = value(input);
+        if (!raw) return "";
+
         try {
-            const url = new URL(text(value));
-            return ["http:", "https:"].includes(url.protocol)
-                ? url.href
-                : "";
+            const url = new URL(raw, window.location.href);
+            if (!allowed.includes(url.protocol)) return "";
+            return url.href;
         } catch {
             return "";
         }
     }
 
-    function safeContactUrl(value) {
-        try {
-            const url = new URL(text(value));
-            return [
-                "http:",
-                "https:",
-                "mailto:",
-                "tel:",
-                "sms:"
-            ].includes(url.protocol) ? url.href : "";
-        } catch {
-            return "";
-        }
-    }
+    function externalLink(label, url) {
+        const href = safeUrl(url, ["https:", "http:", "mailto:", "tel:"]);
+        if (!href) return null;
 
-    function createElement(tag, className, value) {
-        const element = document.createElement(tag);
+        const link = element("a", "contact-link", label || href);
+        link.href = href;
 
-        if (className) element.className = className;
-        if (value !== undefined) element.textContent = value;
-
-        return element;
-    }
-
-    function createSection(title, className) {
-        const section = createElement(
-            "section",
-            "contact-section " + (className || "")
-        );
-
-        section.appendChild(
-            createElement("h2", "contact-section-title", title)
-        );
-
-        content.appendChild(section);
-        return section;
-    }
-
-    function createLink(url, label, className) {
-        const link = document.createElement("a");
-
-        link.href = url;
-        link.textContent = label;
-        link.className = className || "contact-link";
-
-        if (url.startsWith("http:") || url.startsWith("https:")) {
+        if (href.startsWith("http:") || href.startsWith("https:")) {
             link.target = "_blank";
             link.rel = "noopener noreferrer";
         }
@@ -89,436 +61,321 @@
         return link;
     }
 
-    function methodUrl(method) {
-        const customUrl = safeContactUrl(method.url);
-        if (customUrl) return customUrl;
+    function section(title) {
+        const wrapper = element("section", "contact-section");
+        wrapper.appendChild(element("h2", "contact-section-title", title));
+        return wrapper;
+    }
 
-        const value = text(method.value);
-        const type = text(method.type).toLowerCase();
+    function cardGrid() {
+        return element("div", "contact-grid");
+    }
 
-        if (!value) return "";
-
-        if (type === "email" && value.includes("@")) {
-            return "mailto:" + value;
+    function card(title, description) {
+        const wrapper = element("article", "contact-card");
+        if (title) wrapper.appendChild(element("h3", "contact-card-title", title));
+        if (description) {
+            wrapper.appendChild(element("p", "contact-muted", description));
         }
-
-        if (type === "phone") {
-            const number = value.replace(/[^\d+*#,;]/g, "");
-            return number ? "tel:" + number : "";
-        }
-
-        if (type === "sms") {
-            const number = value.replace(/[^\d+]/g, "");
-            return number ? "sms:" + number : "";
-        }
-
-        if (type === "whatsapp") {
-            const number = value.replace(/\D/g, "");
-            return number
-                ? "https://wa.me/" + number
-                : "";
-        }
-
-        if (type === "telegram") {
-            const username = value.replace(/^@/, "");
-            return username
-                ? "https://t.me/" + encodeURIComponent(username)
-                : "";
-        }
-
-        return "";
+        return wrapper;
     }
 
     function renderOwner(owner) {
         if (!owner || typeof owner !== "object") return;
 
-        const name = text(owner.name);
-        const role = text(owner.role);
-        const organization = text(owner.organization);
-        const photo = text(owner.photo);
+        const name = value(owner.name);
+        const role = value(owner.role);
+        const organization = value(owner.organization);
+        const photo = safeUrl(owner.photo, ["https:", "http:"]);
 
         if (!name && !role && !organization && !photo) return;
 
-        const card = createElement("div", "contact-owner");
+        const wrapper = element("div", "contact-owner");
 
         if (photo) {
-            try {
-                const imageUrl = new URL(photo, window.location.href);
-
-                if (["http:", "https:"].includes(imageUrl.protocol)) {
-                    const image = createElement(
-                        "img",
-                        "contact-owner-photo"
-                    );
-
-                    image.src = imageUrl.href;
-                    image.alt = name || organization || "Contact owner";
-                    image.loading = "lazy";
-
-                    card.appendChild(image);
-                }
-            } catch {
-                // Ignore invalid image paths.
-            }
+            const image = element("img", "contact-owner-photo");
+            image.src = photo;
+            image.alt = name ? name : "Contact profile";
+            image.loading = "lazy";
+            image.onerror = function () {
+                image.remove();
+            };
+            wrapper.appendChild(image);
         }
 
-        const details = createElement("div", "contact-owner-details");
+        const details = element("div", "contact-owner-details");
 
-        if (name) {
-            details.appendChild(
-                createElement("h2", "", name)
-            );
-        }
-
-        if (role) {
-            details.appendChild(
-                createElement("p", "contact-owner-role", role)
-            );
-        }
-
+        if (name) details.appendChild(element("h2", "", name));
+        if (role) details.appendChild(element("p", "contact-muted", role));
         if (organization) {
-            details.appendChild(
-                createElement("p", "contact-owner-organization", organization)
-            );
+            details.appendChild(element("p", "contact-muted", organization));
         }
 
-        card.appendChild(details);
-        content.appendChild(card);
+        wrapper.appendChild(details);
+        content.appendChild(wrapper);
+    }
+
+    function methodUrl(method) {
+        const type = value(method.type).toLowerCase();
+        const display = value(method.value);
+
+        if (method.url) {
+            return safeUrl(method.url, [
+                "https:", "http:", "mailto:", "tel:", "sms:"
+            ]);
+        }
+
+        if (!display) return "";
+
+        if (type === "email") {
+            return "mailto:" + display;
+        }
+
+        if (type === "phone") {
+            return "tel:" + display.replace(/[^\d+]/g, "");
+        }
+
+        if (type === "whatsapp") {
+            const number = display.replace(/\D/g, "");
+            return number ? "https://wa.me/" + number : "";
+        }
+
+        if (type === "telegram") {
+            const username = display.replace(/^@/, "");
+            return username ? "https://t.me/" + username : "";
+        }
+
+        return "";
     }
 
     function renderMethods(methods) {
         if (!Array.isArray(methods)) return;
 
-        const validMethods = methods
-            .filter(method => method && typeof method === "object")
-            .map(method => ({
-                method,
-                url: methodUrl(method)
-            }))
-            .filter(item => item.url)
-            .sort((a, b) =>
-                Number(b.method.primary === true) -
-                Number(a.method.primary === true)
-            );
-
-        if (!validMethods.length) return;
-
-        const section = createSection(
-            "Contact options",
-            "contact-methods-section"
+        const entries = methods.filter(item =>
+            item && typeof item === "object" &&
+            (value(item.value) || value(item.url))
         );
 
-        const grid = createElement("div", "contact-grid");
+        if (!entries.length) return;
 
-        validMethods.forEach(({ method, url }) => {
-            const type = text(method.type).toLowerCase();
-            const label = text(method.label) || type || "Contact";
-            const value = text(method.value) || label;
+        const wrapper = section("Contact options");
+        const grid = cardGrid();
 
-            const card = createElement("article", "contact-card");
-            const icon = createElement(
-                "div",
-                "contact-card-icon",
-                {
-                    email: "✉",
-                    phone: "☎",
-                    whatsapp: "W",
-                    telegram: "T",
-                    sms: "SMS"
-                }[type] || "↗"
-            );
+        entries.forEach(method => {
+            const label = value(method.label) || value(method.type) || "Contact";
+            const display = value(method.value);
+            const url = methodUrl(method);
 
-            const details = createElement(
-                "div",
-                "contact-card-details"
-            );
+            if (!url) return;
 
-            details.appendChild(
-                createElement("h3", "", label)
-            );
+            const item = card(label);
+            const link = externalLink(display || label, url);
 
-            details.appendChild(
-                createLink(url, value, "contact-link")
-            );
-
-            card.append(icon, details);
-            grid.appendChild(card);
+            if (link) item.appendChild(link);
+            grid.appendChild(item);
         });
 
-        section.appendChild(grid);
+        if (grid.children.length) {
+            wrapper.appendChild(grid);
+            content.appendChild(wrapper);
+        }
     }
 
     function renderAddresses(addresses) {
         if (!Array.isArray(addresses)) return;
 
-        const validAddresses = addresses.filter(address => {
+        const entries = addresses.filter(address => {
             if (!address || typeof address !== "object") return false;
-
             return [
-                address.street,
-                address.city,
-                address.region,
-                address.postalCode,
-                address.country
-            ].some(value => text(value));
+                address.street, address.city, address.region,
+                address.postalCode, address.country
+            ].some(value);
         });
 
-        if (!validAddresses.length) return;
+        if (!entries.length) return;
 
-        const section = createSection("Locations", "contact-addresses");
-        const grid = createElement("div", "contact-grid");
+        const wrapper = section("Addresses");
+        const grid = cardGrid();
 
-        validAddresses.forEach(address => {
-            const card = createElement("article", "contact-card");
-
-            card.appendChild(
-                createElement(
-                    "h3",
-                    "contact-card-heading",
-                    text(address.label) || "Address"
-                )
-            );
+        entries.forEach(address => {
+            const item = card(value(address.label) || "Address");
 
             const lines = [
-                address.street,
-                [address.city, address.region].filter(text).join(", "),
-                address.postalCode,
-                address.country
-            ].map(text).filter(Boolean);
-
-            const addressText = lines.join(", ");
+                value(address.street),
+                [value(address.city), value(address.region)].filter(Boolean).join(", "),
+                value(address.postalCode),
+                value(address.country)
+            ].filter(Boolean);
 
             lines.forEach(line => {
-                card.appendChild(
-                    createElement("p", "contact-address-line", line)
-                );
+                item.appendChild(element("p", "contact-address-line", line));
             });
 
-            let mapUrl = safeExternalUrl(address.mapUrl);
+            let mapUrl = safeUrl(address.mapUrl, ["https:", "http:"]);
 
-            if (!mapUrl && addressText) {
-                mapUrl =
-                    "https://www.google.com/maps/search/?api=1&query=" +
-                    encodeURIComponent(addressText);
+            if (!mapUrl && lines.length) {
+                mapUrl = "https://www.google.com/maps/search/?api=1&query=" +
+                    encodeURIComponent(lines.join(", "));
             }
 
             if (mapUrl) {
-                card.appendChild(
-                    createLink(mapUrl, "View on map", "contact-link contact-map-link")
-                );
+                const link = externalLink("View on map", mapUrl);
+                if (link) {
+                    link.classList.add("contact-map-link");
+                    item.appendChild(link);
+                }
             }
 
-            grid.appendChild(card);
+            grid.appendChild(item);
         });
 
-        section.appendChild(grid);
+        if (grid.children.length) {
+            wrapper.appendChild(grid);
+            content.appendChild(wrapper);
+        }
     }
 
-    function renderLinks(title, items, className) {
-        if (!Array.isArray(items)) return;
+    function renderLinkList(title, entries) {
+        if (!Array.isArray(entries)) return;
 
-        const validItems = items
-            .filter(item => item && typeof item === "object")
-            .map(item => ({
-                item,
-                url: safeExternalUrl(item.url)
-            }))
-            .filter(entry => entry.url);
+        const validEntries = entries.filter(item =>
+            item && typeof item === "object" &&
+            value(item.url)
+        );
 
-        if (!validItems.length) return;
+        if (!validEntries.length) return;
 
-        const section = createSection(title, className);
-        const grid = createElement("div", "contact-grid");
+        const wrapper = section(title);
+        const grid = cardGrid();
 
-        validItems.forEach(({ item, url }) => {
-            const card = createElement("article", "contact-card");
+        validEntries.forEach(entry => {
+            const label = value(entry.label) ||
+                value(entry.platform) ||
+                value(entry.username) ||
+                "Visit link";
 
-            const label =
-                text(item.label) ||
-                text(item.platform) ||
-                "Website";
-
-            card.appendChild(
-                createElement("h3", "contact-card-heading", label)
+            const item = card(label, value(entry.description));
+            const link = externalLink(
+                value(entry.username) ? value(entry.username) : label,
+                entry.url
             );
 
-            if (text(item.username)) {
-                card.appendChild(
-                    createElement(
-                        "p",
-                        "contact-muted",
-                        text(item.username)
-                    )
-                );
+            if (link) {
+                item.appendChild(link);
+                grid.appendChild(item);
             }
-
-            if (text(item.description)) {
-                card.appendChild(
-                    createElement(
-                        "p",
-                        "contact-muted",
-                        text(item.description)
-                    )
-                );
-            }
-
-            card.appendChild(
-                createLink(url, "Visit " + label, "contact-link")
-            );
-
-            grid.appendChild(card);
         });
 
-        section.appendChild(grid);
+        if (grid.children.length) {
+            wrapper.appendChild(grid);
+            content.appendChild(wrapper);
+        }
     }
 
     function renderHours(hours) {
         if (!hours || typeof hours !== "object") return;
+        if (!Array.isArray(hours.items) || !hours.items.length) return;
 
-        const items = Array.isArray(hours.items)
-            ? hours.items.filter(item =>
-                item &&
-                typeof item === "object" &&
-                text(item.days) &&
-                text(item.hours)
-            )
-            : [];
-
-        const timezone = text(hours.timezone);
-        const note = text(hours.note);
-
-        if (!items.length && !timezone && !note) return;
-
-        const section = createSection(
-            "Availability",
-            "contact-hours"
-        );
+        const wrapper = section("Contact hours");
+        const timezone = value(hours.timezone);
 
         if (timezone) {
-            section.appendChild(
-                createElement(
-                    "p",
-                    "contact-muted",
-                    "Timezone: " + timezone
-                )
-            );
+            wrapper.appendChild(element("p", "contact-muted", "Time zone: " + timezone));
         }
 
-        if (items.length) {
-            const list = createElement("div", "contact-hours-list");
+        const list = element("div", "contact-hours-list");
 
-            items.forEach(item => {
-                const row = createElement("div", "contact-hours-row");
+        hours.items.forEach(item => {
+            if (!item || typeof item !== "object") return;
 
-                row.append(
-                    createElement("span", "", text(item.days)),
-                    createElement("strong", "", text(item.hours))
-                );
+            const days = value(item.days);
+            const times = value(item.hours);
+            if (!days && !times) return;
 
-                list.appendChild(row);
-            });
+            const row = element("div", "contact-hours-row");
+            row.appendChild(element("span", "", days));
+            row.appendChild(element("strong", "", times));
+            list.appendChild(row);
+        });
 
-            section.appendChild(list);
+        if (list.children.length) wrapper.appendChild(list);
+
+        if (value(hours.note)) {
+            wrapper.appendChild(element("p", "contact-muted", value(hours.note)));
         }
 
-        if (note) {
-            section.appendChild(
-                createElement("p", "contact-muted", note)
-            );
+        if (list.children.length || value(hours.note)) {
+            content.appendChild(wrapper);
         }
     }
 
     function render(data) {
-        if (data.enabled === false) {
-            heading.textContent = "Contact information";
-            content.appendChild(
-                createElement(
-                    "p",
-                    "contact-empty",
-                    "Contact information is currently unavailable."
-                )
+        if (!data || typeof data !== "object") {
+            throw new Error("Invalid contact data");
+        }
+
+        const contact = data.contact;
+
+        if (!contact || typeof contact !== "object") {
+            content.replaceChildren(
+                element("p", "contact-empty",
+                    "No public contact information has been added yet.")
             );
             return;
         }
 
-        heading.textContent = text(data.heading) || "Get in Touch";
-        intro.textContent = text(data.intro);
-        intro.hidden = !intro.textContent;
-
-        renderOwner(data.owner);
-        renderMethods(data.contactMethods);
-        renderAddresses(data.addresses);
-
-        renderLinks(
-            "Websites",
-            data.websites,
-            "contact-websites"
-        );
-
-        renderLinks(
-            "Social media",
-            data.socialLinks,
-            "contact-social"
-        );
-
-        renderHours(data.hours);
-
-        renderLinks(
-            "Other information",
-            data.additionalLinks,
-            "contact-additional"
-        );
-
-        const publicNote = text(data.publicNote);
-
-        if (publicNote) {
-            const note = createElement(
-                "div",
-                "contact-public-note",
-                publicNote
+        if (contact.enabled === false) {
+            content.replaceChildren(
+                element("p", "contact-empty",
+                    "Contact information is currently unavailable.")
             );
+            return;
+        }
 
-            content.appendChild(note);
+        heading.textContent = value(contact.heading) || "Get in Touch";
+        intro.textContent = value(contact.intro);
+        intro.hidden = !value(contact.intro);
+
+        content.replaceChildren();
+
+        renderOwner(contact.owner);
+        renderMethods(contact.methods);
+        renderAddresses(contact.addresses);
+        renderLinkList("Websites", contact.websites);
+        renderLinkList("Social media", contact.socialLinks);
+        renderHours(contact.hours);
+        renderLinkList("Additional links", contact.additionalLinks);
+
+        if (value(contact.publicNote)) {
+            content.appendChild(
+                element("div", "contact-public-note", value(contact.publicNote))
+            );
         }
 
         if (!content.children.length) {
             content.appendChild(
-                createElement(
-                    "p",
-                    "contact-empty",
-                    "No public contact information has been added yet."
-                )
+                element("p", "contact-empty",
+                    "No public contact information has been added yet.")
             );
         }
     }
 
     async function initialize() {
         try {
-            const response = await fetch("data/contact-details.json", {
+            const response = await fetch("data/contacts.json", {
                 cache: "no-cache"
             });
 
             if (!response.ok) {
-                throw new Error("Contact information file not found.");
+                throw new Error("Contact information could not be loaded");
             }
 
             const data = await response.json();
-
-            if (!data || typeof data !== "object") {
-                throw new Error("Invalid contact information.");
-            }
-
             render(data);
-
         } catch (error) {
-            console.error("Contacts page:", error);
-
             content.replaceChildren(
-                createElement(
-                    "p",
-                    "contact-empty",
-                    "Contact information could not be loaded. Please try again later."
-                )
+                element("p", "contact-empty",
+                    "Contact information is not available right now.")
             );
         }
     }
