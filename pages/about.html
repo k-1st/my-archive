@@ -1,151 +1,584 @@
-<section class="metadata-page">
-    <header class="metadata-header">
-        <span class="metadata-label">ABOUT THIS ARCHIVE</span>
-        <h1 id="about-title">Loading...</h1>
-        <p id="about-description"></p>
-    </header>
-
-    <div class="metadata-details">
-        <div class="metadata-row">
-            <span>Date</span>
-            <strong id="about-date">—</strong>
-        </div>
-
-        <div class="metadata-row">
-            <span>Tags</span>
-            <div id="about-tags">—</div>
-        </div>
-
-        <div class="metadata-row">
-            <span>Keywords</span>
-            <div id="about-keywords">—</div>
-        </div>
-
-        <div class="metadata-row">
-            <span>Featured</span>
-            <strong id="about-featured">—</strong>
-        </div>
-
-        <div class="metadata-row">
-            <span>Search text</span>
-            <p id="about-search-text">—</p>
-        </div>
+<section class="about-page" id="about-page">
+    <div id="about-content">
+        <p class="about-loading">Loading archive information...</p>
     </div>
-
-    <p id="about-status" role="status"></p>
 </section>
 
 <style>
-.metadata-page {
-    margin: 0 auto;
+.about-page {
+    width: 100%;
+    overflow-wrap: anywhere;
+    line-height: 1.7;
 }
 
-.metadata-header {
-    margin-bottom: 32px;
+.about-page h1,
+.about-page h2,
+.about-page h3 {
+    line-height: 1.3;
 }
 
-.metadata-label {
-    font-size: 12px;
-    letter-spacing: 1.5px;
-    opacity: 0.65;
+.about-page h1 {
+    margin: 0 0 12px;
+    font-size: clamp(28px, 4vw, 38px);
 }
 
-.metadata-header h1 {
-    margin: 10px 0;
+.about-page h2 {
+    margin: 0 0 16px;
+    font-size: 23px;
 }
 
-.metadata-details {
-    border-top: 1px solid var(--border-color, #ccc);
+.about-page h3 {
+    margin: 0 0 8px;
+    font-size: 17px;
 }
 
-.metadata-row {
+.about-muted {
+    color: var(--muted-color);
+}
+
+.about-hero {
     display: grid;
-    grid-template-columns: 130px 1fr;
-    gap: 16px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--border-color, #ccc);
+    grid-template-columns: minmax(0, 1.5fr) minmax(220px, 0.8fr);
+    gap: 30px;
+    align-items: center;
+    margin-bottom: 35px;
 }
 
-.metadata-row > span {
-    opacity: 0.65;
+.about-hero-text {
+    min-width: 0;
 }
 
-.metadata-row p {
-    margin: 0;
+.about-subtitle {
+    margin: 0 0 18px;
+    color: var(--muted-color);
+    font-size: 18px;
 }
 
-.metadata-tag {
-    display: inline-block;
-    margin: 2px 5px 2px 0;
-    padding: 4px 9px;
-    border: 1px solid var(--border-color, #ccc);
-    border-radius: 20px;
+.about-description {
+    line-height: 1.8;
+}
+
+.about-hero-image {
+    width: 100%;
+    max-height: 270px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--soft-border);
+}
+
+.about-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.about-fact {
+    padding: 9px 13px;
+    border: 1px solid var(--soft-border);
+    border-radius: 8px;
+    background: var(--hover-bg);
     font-size: 13px;
 }
 
-@media (max-width: 500px) {
-    .metadata-row {
+.about-section {
+    margin-top: 38px;
+}
+
+.about-section > p {
+    max-width: 900px;
+}
+
+.about-owner {
+    display: flex;
+    align-items: flex-start;
+    gap: 22px;
+    padding: 22px;
+    border: 1px solid var(--soft-border);
+    border-radius: 12px;
+    background: var(--surface-bg);
+}
+
+.about-owner-photo {
+    width: 125px;
+    height: 125px;
+    flex-shrink: 0;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.about-owner-details {
+    min-width: 0;
+}
+
+.about-owner-role {
+    margin: 0 0 12px;
+    color: var(--muted-color);
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 15px;
+}
+
+.about-card {
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid var(--soft-border);
+    border-radius: 10px;
+    background: var(--surface-bg);
+}
+
+.about-card p {
+    margin-bottom: 0;
+}
+
+.about-list {
+    padding-left: 22px;
+}
+
+.about-list li {
+    margin: 8px 0;
+}
+
+.about-timeline {
+    position: relative;
+    margin-left: 8px;
+    padding-left: 24px;
+    border-left: 2px solid var(--soft-border);
+}
+
+.about-milestone {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.about-milestone::before {
+    position: absolute;
+    top: 6px;
+    left: -31px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--text-color);
+    content: "";
+}
+
+.about-year {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--muted-color);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.about-link {
+    color: var(--text-color);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    overflow-wrap: anywhere;
+}
+
+.about-link:hover {
+    opacity: 0.7;
+}
+
+.about-related-link {
+    display: block;
+    padding: 15px;
+    border: 1px solid var(--soft-border);
+    border-radius: 9px;
+    background: var(--surface-bg);
+}
+
+.about-related-link p {
+    margin: 5px 0 0;
+    color: var(--muted-color);
+    font-size: 14px;
+}
+
+.about-loading,
+.about-error {
+    padding: 20px;
+    color: var(--muted-color);
+}
+
+@media (max-width: 650px) {
+    .about-hero {
         grid-template-columns: 1fr;
-        gap: 6px;
+    }
+
+    .about-hero-image {
+        max-height: 230px;
+    }
+
+    .about-owner {
+        flex-direction: column;
+    }
+
+    .about-owner-photo {
+        width: 95px;
+        height: 95px;
     }
 }
 </style>
 
 <script>
-(async function () {
-    const status = document.getElementById("about-status");
+(function () {
+    const root = document.getElementById("about-page");
+    if (!root || root.dataset.initialized === "true") return;
+    root.dataset.initialized = "true";
 
-    function setText(id, value) {
-        document.getElementById(id).textContent = value || "—";
+    const content = root.querySelector("#about-content");
+
+    function value(input) {
+        return typeof input === "string" ? input.trim() : "";
     }
 
-    function renderTags(id, values) {
-        const container = document.getElementById(id);
-        container.replaceChildren();
+    function element(tag, className, text) {
+        const node = document.createElement(tag);
 
-        if (!Array.isArray(values) || values.length === 0) {
-            container.textContent = "—";
-            return;
-        }
+        if (className) node.className = className;
+        if (text !== undefined) node.textContent = text;
 
-        values.forEach(value => {
-            const tag = document.createElement("span");
-            tag.className = "metadata-tag";
-            tag.textContent = value;
-            container.appendChild(tag);
+        return node;
+    }
+
+    function safeUrl(input) {
+        const url = value(input);
+
+        try {
+            const parsed = new URL(url);
+            if (parsed.protocol === "https:" || parsed.protocol === "http:") {
+                return parsed.href;
+            }
+        } catch (_) {}
+
+        return "";
+    }
+
+    function link(label, url, className) {
+        const safe = safeUrl(url);
+        if (!safe || !value(label)) return null;
+
+        const a = element("a", className || "about-link", label);
+        a.href = safe;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        return a;
+    }
+
+    function section(heading, className) {
+        const wrapper = element("section", className || "about-section");
+        wrapper.appendChild(element("h2", "", heading));
+        return wrapper;
+    }
+
+    function addParagraph(parent, text) {
+        const contentText = value(text);
+        if (!contentText) return;
+
+        parent.appendChild(element("p", "", contentText));
+    }
+
+    function renderFacts(archive, parent) {
+        const facts = [
+            ["Established", archive.established],
+            ["Type", archive.type],
+            ["Status", archive.status]
+        ];
+
+        const container = element("div", "about-facts");
+
+        facts.forEach(([label, text]) => {
+            if (!value(text)) return;
+
+            container.appendChild(
+                element("div", "about-fact", label + ": " + text)
+            );
         });
+
+        if (container.children.length) parent.appendChild(container);
     }
 
-    try {
-        const response = await fetch("data/about.json");
+    function renderHero(archive, parent) {
+        const wrapper = element("div", "about-hero");
+        const text = element("div", "about-hero-text");
 
-        if (!response.ok) {
-            throw new Error(
-                `Could not load data/about.json (${response.status})`
+        text.appendChild(element("h1", "", value(archive.name) || "About"));
+
+        if (value(archive.subtitle)) {
+            text.appendChild(
+                element("p", "about-subtitle", archive.subtitle)
             );
         }
 
-        const metadata = await response.json();
+        addParagraph(text, archive.description);
+        renderFacts(archive, text);
 
-        setText("about-title", metadata.title);
-        setText("about-description", metadata.description);
-        setText("about-date", metadata.date);
-        setText(
-            "about-featured",
-            metadata.featured === true ? "Yes" : "No"
-        );
-        setText("about-search-text", metadata.searchText);
+        wrapper.appendChild(text);
 
-        renderTags("about-tags", metadata.tags);
-        renderTags("about-keywords", metadata.keywords);
+        const imageUrl = safeUrl(archive.image);
 
-        status.textContent = "Metadata loaded successfully.";
+        if (imageUrl) {
+            const image = element("img", "about-hero-image");
+            image.src = imageUrl;
+            image.alt = value(archive.name) || "Archive image";
+            image.loading = "lazy";
+            image.addEventListener("error", () => image.remove(), { once: true });
+            wrapper.appendChild(image);
+        }
 
-    } catch (error) {
-        console.error("About page metadata error:", error);
-
-        setText("about-title", "Unable to load About metadata");
-        status.textContent = error.message;
+        if (text.children.length > 0) parent.appendChild(wrapper);
     }
+
+    function renderHistory(history, parent) {
+        if (!history || typeof history !== "object") return;
+
+        const wrapper = section(value(history.heading) || "History");
+        addParagraph(wrapper, history.text);
+
+        if (Array.isArray(history.milestones) && history.milestones.length) {
+            const timeline = element("div", "about-timeline");
+
+            history.milestones.forEach(item => {
+                if (!item || typeof item !== "object") return;
+
+                const milestone = element("div", "about-milestone");
+
+                if (value(item.year)) {
+                    milestone.appendChild(
+                        element("span", "about-year", item.year)
+                    );
+                }
+
+                if (value(item.title)) {
+                    milestone.appendChild(element("h3", "", item.title));
+                }
+
+                addParagraph(milestone, item.description);
+
+                if (milestone.children.length) timeline.appendChild(milestone);
+            });
+
+            if (timeline.children.length) wrapper.appendChild(timeline);
+        }
+
+        if (wrapper.children.length > 1) parent.appendChild(wrapper);
+    }
+
+    function renderOwner(owner, parent) {
+        if (!owner || typeof owner !== "object") return;
+
+        const hasInfo = [
+            owner.name, owner.role, owner.biography,
+            owner.location, owner.website, owner.photo
+        ].some(value);
+
+        if (!hasInfo) return;
+
+        const wrapper = section(value(owner.heading) || "About the Owner");
+        const card = element("div", "about-owner");
+
+        const imageUrl = safeUrl(owner.photo);
+
+        if (imageUrl) {
+            const image = element("img", "about-owner-photo");
+            image.src = imageUrl;
+            image.alt = value(owner.name) || "Owner portrait";
+            image.loading = "lazy";
+            image.addEventListener("error", () => image.remove(), { once: true });
+            card.appendChild(image);
+        }
+
+        const details = element("div", "about-owner-details");
+
+        if (value(owner.name)) {
+            details.appendChild(element("h3", "", owner.name));
+        }
+
+        if (value(owner.role)) {
+            details.appendChild(
+                element("p", "about-owner-role", owner.role)
+            );
+        }
+
+        addParagraph(details, owner.biography);
+        addParagraph(details, owner.location);
+
+        const website = link("Visit website", owner.website);
+        if (website) details.appendChild(website);
+
+        card.appendChild(details);
+        wrapper.appendChild(card);
+        parent.appendChild(wrapper);
+    }
+
+    function renderOrganization(org, parent) {
+        if (!org || typeof org !== "object") return;
+
+        const hasInfo = [
+            org.name, org.type, org.description, org.website
+        ].some(value) ||
+        (Array.isArray(org.people) && org.people.length > 0);
+
+        if (!hasInfo) return;
+
+        const wrapper = section(value(org.heading) || "Organization");
+
+        if (value(org.name)) {
+            wrapper.appendChild(element("h3", "", org.name));
+        }
+
+        if (value(org.type)) {
+            wrapper.appendChild(element("p", "about-muted", org.type));
+        }
+
+        addParagraph(wrapper, org.description);
+
+        const website = link("Organization website", org.website);
+        if (website) wrapper.appendChild(website);
+
+        if (Array.isArray(org.people) && org.people.length) {
+            const grid = element("div", "about-grid");
+
+            org.people.forEach(person => {
+                if (!person || typeof person !== "object") return;
+                if (!value(person.name) && !value(person.role)) return;
+
+                const card = element("div", "about-card");
+
+                if (value(person.name)) {
+                    card.appendChild(element("h3", "", person.name));
+                }
+
+                addParagraph(card, person.role);
+                grid.appendChild(card);
+            });
+
+            if (grid.children.length) wrapper.appendChild(grid);
+        }
+
+        if (wrapper.children.length > 1) parent.appendChild(wrapper);
+    }
+
+    function renderCollection(collection, parent) {
+        if (!collection || typeof collection !== "object") return;
+
+        const wrapper = section(value(collection.heading) || "The Collection");
+        addParagraph(wrapper, collection.description);
+
+        if (Array.isArray(collection.categories) && collection.categories.length) {
+            const list = element("ul", "about-list");
+
+            collection.categories.forEach(item => {
+                if (value(item)) {
+                    list.appendChild(element("li", "", item));
+                }
+            });
+
+            if (list.children.length) wrapper.appendChild(list);
+        }
+
+        addParagraph(wrapper, collection.approach);
+
+        if (wrapper.children.length > 1) parent.appendChild(wrapper);
+    }
+
+    function renderMission(mission, parent) {
+        if (!mission || typeof mission !== "object") return;
+        if (!value(mission.text)) return;
+
+        const wrapper = section(value(mission.heading) || "Our Mission");
+        addParagraph(wrapper, mission.text);
+        parent.appendChild(wrapper);
+    }
+
+    function renderCustomSections(sections, parent) {
+        if (!Array.isArray(sections)) return;
+
+        sections.forEach(item => {
+            if (!item || typeof item !== "object") return;
+            if (!value(item.heading) && !value(item.text)) return;
+
+            const wrapper = section(value(item.heading) || "Additional Information");
+            addParagraph(wrapper, item.text);
+            parent.appendChild(wrapper);
+        });
+    }
+
+    function renderRelatedLinks(links, parent) {
+        if (!Array.isArray(links)) return;
+
+        const cards = element("div", "about-grid");
+
+        links.forEach(item => {
+            if (!item || typeof item !== "object") return;
+
+            const a = link(value(item.label) || "Learn more", item.url, "about-related-link");
+            if (!a) return;
+
+            addParagraph(a, item.description);
+            cards.appendChild(a);
+        });
+
+        if (!cards.children.length) return;
+
+        const wrapper = section("Related Resources");
+        wrapper.appendChild(cards);
+        parent.appendChild(wrapper);
+    }
+
+    function render(data) {
+        const about = data && data.about;
+
+        if (!about || typeof about !== "object") {
+            content.replaceChildren(
+                element("p", "about-error", "About information is not available yet.")
+            );
+            return;
+        }
+
+        content.replaceChildren();
+
+        renderHero(about.archive || {}, content);
+        renderHistory(about.history, content);
+        renderOwner(about.owner, content);
+        renderOrganization(about.organization, content);
+        renderCollection(about.collection, content);
+        renderMission(about.mission, content);
+        renderCustomSections(about.sections, content);
+        renderRelatedLinks(about.relatedLinks, content);
+
+        if (!content.children.length) {
+            content.appendChild(
+                element("p", "about-muted", "About information has not been added yet.")
+            );
+        }
+    }
+
+    async function initialize() {
+        try {
+            const response = await fetch("data/about.json", {
+                cache: "no-cache"
+            });
+
+            if (!response.ok) {
+                throw new Error("Unable to load About information (" + response.status + ").");
+            }
+
+            const data = await response.json();
+            render(data);
+        } catch (error) {
+            console.error("About page error:", error);
+
+            content.replaceChildren(
+                element("p", "about-error", "About information could not be loaded. Please try again later.")
+            );
+        }
+    }
+
+    initialize();
 })();
 </script>
