@@ -28,6 +28,7 @@ let siteSettings = {
 };
 
 let pageItems = [];
+let archiveItems = [];
 let pageTitleMap = new Map();
 
 let navigationIndex = 0;
@@ -647,6 +648,8 @@ async function initialize() {
 
         const pagesData = await pagesResponse.json();
         const archiveData = await archiveResponse.json();
+
+        archiveItems = archiveData.navigation || [];
 
         pageItems = pagesData.navigation.filter(
             item => item.type === "page"
