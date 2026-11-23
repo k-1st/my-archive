@@ -1,4 +1,9 @@
 <section class="about-page" id="about-page">
+    <header class="page-header">
+        <p class="page-eyebrow">ABOUT</p>
+        <h1 id="about-heading">About</h1>
+        <p id="about-intro"></p>
+    </header>
     <div id="about-content">
         <p class="about-loading">Loading archive information...</p>
     </div>
@@ -44,16 +49,6 @@
 
 .about-hero-text {
     min-width: 0;
-}
-
-.about-subtitle {
-    margin: 0 0 18px;
-    color: var(--muted-color);
-    font-size: 18px;
-}
-
-.about-description {
-    line-height: 1.8;
 }
 
 .about-hero-image {
@@ -229,6 +224,8 @@
     root.dataset.initialized = "true";
 
     const content = root.querySelector("#about-content");
+    const heading = root.querySelector("#about-heading");
+    const intro = root.querySelector("#about-intro");
 
     function value(input) {
         return typeof input === "string" ? input.trim() : "";
@@ -300,36 +297,41 @@
         if (container.children.length) parent.appendChild(container);
     }
 
-    function renderHero(archive, parent) {
-        const wrapper = element("div", "about-hero");
-        const text = element("div", "about-hero-text");
+function renderHero(archive, parent) {
+    heading.textContent = value(archive.name) || "About";
 
-        text.appendChild(element("h1", "", value(archive.name) || "About"));
+    const introText = [
+        value(archive.subtitle),
+        value(archive.description)
+    ].filter(Boolean).join(" ");
 
-        if (value(archive.subtitle)) {
-            text.appendChild(
-                element("p", "about-subtitle", archive.subtitle)
-            );
-        }
+    intro.textContent = introText;
+    intro.hidden = !introText;
 
-        addParagraph(text, archive.description);
-        renderFacts(archive, text);
+    const wrapper = element("div", "about-hero");
+    const text = element("div", "about-hero-text");
 
-        wrapper.appendChild(text);
+    renderFacts(archive, text);
 
-        const imageUrl = safeUrl(archive.image);
+    wrapper.appendChild(text);
 
-        if (imageUrl) {
-            const image = element("img", "about-hero-image");
-            image.src = imageUrl;
-            image.alt = value(archive.name) || "Archive image";
-            image.loading = "lazy";
-            image.addEventListener("error", () => image.remove(), { once: true });
-            wrapper.appendChild(image);
-        }
+    const imageUrl = safeUrl(archive.image);
 
-        if (text.children.length > 0) parent.appendChild(wrapper);
+    if (imageUrl) {
+        const image = element("img", "about-hero-image");
+        image.src = imageUrl;
+        image.alt = value(archive.name) || "Archive image";
+        image.loading = "lazy";
+        image.addEventListener("error", () => image.remove(), {
+            once: true
+        });
+        wrapper.appendChild(image);
     }
+
+    if (wrapper.children.length > 0) {
+        parent.appendChild(wrapper);
+    }
+}
 
     function renderHistory(history, parent) {
         if (!history || typeof history !== "object") return;
