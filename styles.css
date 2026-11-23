@@ -144,6 +144,7 @@ body {
     background: transparent;
     color: #333;
     cursor: pointer;
+    padding: 0;
 }
 
 .icon-button:hover {
@@ -929,6 +930,7 @@ body {
         display: block;
     }
 }
+
 
 
 
