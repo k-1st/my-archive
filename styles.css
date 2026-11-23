@@ -335,7 +335,7 @@ body {
 /* Shared container for every page */
 #page-content {
     flex: 1;
-    width: 100%;
+    width: 720px;
     max-width: 720px;
     min-height: min-content;
     height: fit-content;
