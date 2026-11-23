@@ -352,10 +352,10 @@ body {
 
 .footer {
     margin-top: auto;
-    padding: 10px 0;
+    padding: 5px 0;
     border-top: 1px solid #e5e5e5;
     color: #777;
-    font-size: 13px;
+    font-size: 10px;
     text-align: center;
     background: var(--surface-bg);
 }
@@ -946,5 +946,6 @@ body {
         display: block;
     }
 }
+
 
 
