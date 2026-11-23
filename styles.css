@@ -86,7 +86,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    padding: 0 24px;
+    padding: 0 10px;
     background: var(--header-bg);
     color: var(--header-text);
     position: relative;
@@ -117,7 +117,6 @@ body {
     letter-spacing: 1px;
     cursor: pointer;
     white-space: nowrap;
-    margin-left: 12px;
 }
 
 /* Site identity */
@@ -576,7 +575,7 @@ body {
     align-items: center;
     justify-content: flex-start;
     gap: 12px;
-    padding: 0 24px;
+    padding: 0 10px;
     background: var(--surface-bg);
     border-bottom: 1px solid var(--border-color);
     color: var(--text-color);
@@ -667,8 +666,8 @@ body {
 
 .wiki-toggle {
     flex-shrink: 0;
-    width: 32px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
 }
 
 .wiki-panel {
@@ -842,3 +841,4 @@ body {
         display: block;
     }
 }
+
