@@ -28,9 +28,14 @@
     border: 1px solid var(--soft-border);
     border-radius: 8px;
     background: var(--surface-bg);
+    overflow: hidden;
 }
 
-#archive-home .home-section img {
+.home-hero-image {
+    text-align: center;
+}
+
+.home-hero-image img {
     margin: 0 auto;
 }
     
@@ -204,7 +209,9 @@
             ${home.about?.enabled !== false ? `
                 <section class="home-section">
                     <h2>${esc(home.about?.heading || "About This Archive")}</h2>
-                    ${image(archive.image, archive.name || "Archive")}
+                    <div class="home-hero-image">
+                        ${image(archive.image, archive.name || "Archive")}
+                    </div>
                     <h3>${esc(archive.name)}</h3>
                     <p>${esc(archive.description)}</p>
                     ${owner.name ? `<p><strong>${esc(owner.name)}</strong> — ${esc(owner.role)}</p>` : ""}
