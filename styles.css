@@ -248,6 +248,7 @@ body {
     overflow-y: auto;
     border-right: 1px solid var(--sidebar-border);
     transition: width 0.25s ease, min-width 0.25s ease, padding 0.25s ease;
+    font-size: 14px;
 }
 
 .sidebar-collapsed .sidebar {
