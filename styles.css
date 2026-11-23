@@ -677,6 +677,12 @@ body {
     min-width: 280px;
     background: var(--surface-bg);
     color: var(--text-color);
+    border-left: 1px solid var(--soft-border);
+        transition:
+        width 0.25s ease,
+        min-width 0.25s ease,
+        flex-basis 0.25s ease,
+        padding 0.25s ease;
 }
 
 .wiki-collapsed .wiki-panel {
@@ -707,13 +713,7 @@ body {
     padding: 16px;
     overflow-y: auto;
     overflow-x: hidden;
-    border-left: 1px solid var(--soft-border);
     scrollbar-gutter: stable;
-    transition:
-        width 0.25s ease,
-        min-width 0.25s ease,
-        flex-basis 0.25s ease,
-        padding 0.25s ease;
 }
 
 .wiki-content {
@@ -845,6 +845,7 @@ body {
         display: block;
     }
 }
+
 
 
 
