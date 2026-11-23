@@ -629,6 +629,7 @@ body {
 
 .history-controls {
     flex-shrink: 0;
+    font-size: 12px;
 }
 
 .history-controls button {
