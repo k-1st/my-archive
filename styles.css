@@ -675,6 +675,8 @@ body {
     flex: 0 0 280px;
     width: 280px;
     min-width: 280px;
+    height: 100%;
+    overflow: hidden;
     background: var(--surface-bg);
     color: var(--text-color);
     border: 1px solid var(--soft-border);
@@ -853,6 +855,7 @@ body {
         display: block;
     }
 }
+
 
 
 
