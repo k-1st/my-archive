@@ -668,51 +668,109 @@ body {
     flex-shrink: 0;
     width: 24px;
     height: 24px;
-    padding: 0px !important;
+    padding: 0 !important;
 }
 
+/* Main panel */
 .wiki-panel {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+
     flex: 0 0 280px;
     width: 280px;
     min-width: 280px;
+
     height: calc(100% - 20px);
+    min-height: 0;
+
+    margin: 10px;
+    padding: 0;
+
     overflow: hidden;
+
     background: var(--surface-bg);
     color: var(--text-color);
+
     border: 1px solid var(--soft-border);
     border-radius: 8px;
-    margin: 10px;
-        transition:
+
+    transition:
         width 0.25s ease,
         min-width 0.25s ease,
         flex-basis 0.25s ease,
-        padding 0.25s ease;
+        margin 0.25s ease;
 }
 
+/* Collapsed panel */
 .wiki-collapsed .wiki-panel {
     flex-basis: 0;
     width: 0;
     min-width: 0;
-    padding-left: 0;
-    padding-right: 0;
-    overflow: hidden;
-    border-left: 0;
     margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border-width: 0;
 }
 
+/* Fixed header */
 .wiki-panel-header {
+    box-sizing: border-box;
+    flex: 0 0 40px;
     height: 40px;
+    min-height: 40px;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    padding: 10px;
+
+    padding: 0 10px;
+
     border-bottom: 1px solid var(--soft-border);
 }
 
-.wiki-panel-footer {
-    height: 30px;
+.wiki-panel-header strong {
+    font-size: 15px;
+}
+
+/* Scrollable middle section */
+.wiki-content-wrapper {
+    box-sizing: border-box;
+    flex: 1 1 auto;
+
     width: 100%;
+    min-height: 0;
+    min-width: 0;
+
+    padding: 16px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    scrollbar-gutter: stable;
+}
+
+/* Content inside the scrolling area */
+.wiki-content {
+    width: 100%;
+    min-width: 0;
+
+    font-size: 13px;
+    line-height: 1.55;
+
+    overflow-wrap: anywhere;
+}
+
+/* Fixed footer */
+.wiki-panel-footer {
+    box-sizing: border-box;
+    flex: 0 0 30px;
+    height: 30px;
+    min-height: 30px;
+
+    width: 100%;
+
     border-top: 1px solid var(--soft-border);
 }
 
@@ -858,6 +916,7 @@ body {
         display: block;
     }
 }
+
 
 
 
