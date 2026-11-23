@@ -99,6 +99,32 @@
         <main class="content">
             <div id="page-content"></div>
         </main>
+
+<div class="wiki-backdrop" id="wiki-backdrop"></div>
+
+<aside
+    class="wiki-panel"
+    id="wiki-panel"
+    aria-label="Archive Wiki"
+    aria-hidden="false">
+
+    <div class="wiki-panel-header">
+        <strong>Archive Wiki</strong>
+        <button
+            type="button"
+            id="wiki-close"
+            class="icon-button"
+            aria-label="Close Wiki Panel"
+            title="Close">
+            ×
+        </button>
+    </div>
+
+    <div id="wiki-content" class="wiki-content">
+        <p>Loading archive information...</p>
+    </div>
+
+</aside>
         
     </div>
 
@@ -110,6 +136,8 @@
 </div>
 
 <script src="app.js"></script>
-
+<script src="scripts/wiki-panel.js"></script>
+    
 </body>
 </html>
+
