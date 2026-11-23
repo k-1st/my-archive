@@ -2,7 +2,7 @@
     <header class="page-header">
         <p class="page-eyebrow">ABOUT</p>
         <h1 id="about-heading">About</h1>
-        <p id="about-intro"></p>
+        <p id="about-subtitle" class="page-subtitle"></p>
     </header>
     <div id="about-content">
         <p class="about-loading">Loading archive information...</p>
@@ -225,7 +225,7 @@
 
     const content = root.querySelector("#about-content");
     const heading = root.querySelector("#about-heading");
-    const intro = root.querySelector("#about-intro");
+    const subtitle = root.querySelector("#about-subtitle");
 
     function value(input) {
         return typeof input === "string" ? input.trim() : "";
@@ -297,23 +297,21 @@
         if (container.children.length) parent.appendChild(container);
     }
 
-function renderHero(archive, parent) {
+    function renderHero(archive, parent) {
     heading.textContent = value(archive.name) || "About";
 
-    const introText = [
-        value(archive.subtitle),
-        value(archive.description)
-    ].filter(Boolean).join(" ");
-
-    intro.textContent = introText;
-    intro.hidden = !introText;
+    subtitle.textContent = value(archive.subtitle);
+    subtitle.hidden = !value(archive.subtitle);
 
     const wrapper = element("div", "about-hero");
     const text = element("div", "about-hero-text");
 
+    addParagraph(text, archive.description);
     renderFacts(archive, text);
 
-    wrapper.appendChild(text);
+    if (text.children.length) {
+        wrapper.appendChild(text);
+    }
 
     const imageUrl = safeUrl(archive.image);
 
@@ -322,13 +320,11 @@ function renderHero(archive, parent) {
         image.src = imageUrl;
         image.alt = value(archive.name) || "Archive image";
         image.loading = "lazy";
-        image.addEventListener("error", () => image.remove(), {
-            once: true
-        });
+        image.addEventListener("error", () => image.remove(), { once: true });
         wrapper.appendChild(image);
     }
 
-    if (wrapper.children.length > 0) {
+    if (wrapper.children.length) {
         parent.appendChild(wrapper);
     }
 }
