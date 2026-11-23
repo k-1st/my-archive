@@ -694,7 +694,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    padding-bottom: 10px;
+    padding: 10px;
     border-bottom: 1px solid var(--soft-border);
 }
 
@@ -845,6 +845,7 @@ body {
         display: block;
     }
 }
+
 
 
 
