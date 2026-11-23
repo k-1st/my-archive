@@ -455,10 +455,6 @@ body {
     .sidebar-open .sidebar-backdrop {
         display: block;
     }
-
-    .content {
-        padding: 22px 18px;
-    }
 }
 
 @media (max-width: 380px) {
