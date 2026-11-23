@@ -751,6 +751,7 @@ body {
     width: 100%;
     min-width: 0;
     height: 100%;
+    min-height: fit-content;
     font-size: 13px;
     line-height: 1.55;
     border-right: 1px solid var(--soft-border);
@@ -928,6 +929,7 @@ body {
         display: block;
     }
 }
+
 
 
 
