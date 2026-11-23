@@ -326,6 +326,7 @@ body {
     min-width: 0;
     padding: 10px;
     overflow-y: auto;
+    scrollbar-gutter: stable;
     background: var(--page-bg);
     
     display: flex;
@@ -659,4 +660,5 @@ body {
     }
 
 }
+
 
