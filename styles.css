@@ -38,7 +38,7 @@
 
     --header-bg: #20242a;
     --header-text: #e1e4e8;
-    --sidebar-bg: #171a1f;
+    --sidebar-bg: #20252c;
 
     --page-bg: #171a1f;
     --text-color: #e1e4e8;
@@ -357,6 +357,7 @@ body {
     color: #777;
     font-size: 13px;
     text-align: center;
+    background: var(--surface-bg);
 }
 
 .home-page h1 {
