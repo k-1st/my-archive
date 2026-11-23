@@ -489,7 +489,7 @@ async function loadPage(file) {
     activeRequest = controller;
 
     try {
-        content.innerHTML = "<p>Loading...</p>";
+        content.innerHTML = "<p></p>";
 
         const response = await fetch(file, {
             signal: controller.signal,
@@ -738,3 +738,4 @@ themeToggle.addEventListener("click", () => {
 -------------------------------------------------- */
 
 initialize();
+
