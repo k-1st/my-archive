@@ -675,7 +675,7 @@ body {
     flex: 0 0 280px;
     width: 280px;
     min-width: 280px;
-    height: 100%;
+    height: calc(100% - 70px);
     overflow: hidden;
     background: var(--surface-bg);
     color: var(--text-color);
@@ -700,6 +700,7 @@ body {
 }
 
 .wiki-panel-header {
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -719,6 +720,7 @@ body {
 }
 
 .wiki-content-wrapper {
+    height: calc(100% - 70px);
     width: 100%;
     padding: 16px;
     overflow-y: auto;
@@ -855,6 +857,7 @@ body {
         display: block;
     }
 }
+
 
 
 
