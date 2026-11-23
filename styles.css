@@ -675,6 +675,8 @@ body {
     flex: 0 0 280px;
     width: 280px;
     min-width: 280px;
+    background: var(--surface-bg);
+    color: var(--text-color);
 }
 
 .wiki-collapsed .wiki-panel {
@@ -706,8 +708,6 @@ body {
     padding: 16px;
     overflow-y: auto;
     overflow-x: hidden;
-    background: var(--surface-bg);
-    color: var(--text-color);
     border-left: 1px solid var(--soft-border);
     scrollbar-gutter: stable;
     transition:
@@ -846,6 +846,7 @@ body {
         display: block;
     }
 }
+
 
 
 
