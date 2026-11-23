@@ -809,6 +809,7 @@ body {
     flex-shrink: 0;
     object-fit: cover;
     border-radius: 7px;
+    border: 1px solid var(--soft-border);
 }
 
 .wiki-identity strong {
@@ -930,6 +931,7 @@ body {
         display: block;
     }
 }
+
 
 
 
