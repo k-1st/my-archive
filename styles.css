@@ -879,35 +879,66 @@ body {
 }
 
 @media (max-width: 900px) {
+
     .wiki-panel {
         position: fixed;
-        top: calc(var(--header-height) + var(--toolbar-height));
+
+        top: 0;
         right: 0;
         bottom: 0;
+
         z-index: 17;
+
         width: min(320px, 88vw);
         min-width: 0;
+        height: 100%;
+        max-height: 100%;
+
         flex: none;
+        margin: 0;
+
+        border-radius: 8px 0 0 8px;
+        border-width: 1px;
+
         transform: translateX(100%);
         transition: transform 0.25s ease;
-        box-shadow: none;
     }
 
     .wiki-open .wiki-panel {
         transform: translateX(0);
-        box-shadow: -5px 0 20px rgba(0, 0, 0, 0.14);
     }
 
+    /* Collapsed desktop state must not hide mobile drawer */
     .wiki-collapsed .wiki-panel {
         width: min(320px, 88vw);
         min-width: 0;
-        padding: 16px;
-        border-left: 1px solid var(--soft-border);
+        flex: none;
+        margin: 0;
+        padding: 0;
+        border-width: 1px;
     }
 
+    /* Keep header and footer fixed */
+    .wiki-panel-header {
+        flex: 0 0 40px;
+    }
+
+    .wiki-content-wrapper {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .wiki-panel-footer {
+        flex: 0 0 30px;
+    }
+
+    /* Background behind the mobile drawer */
     .wiki-backdrop {
+        display: none;
         position: fixed;
-        inset: calc(var(--header-height) + var(--toolbar-height)) 0 0;
+        inset: 0;
         z-index: 16;
         background: rgba(0, 0, 0, 0.35);
     }
@@ -916,18 +947,3 @@ body {
         display: block;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
