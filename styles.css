@@ -709,6 +709,7 @@ body {
 .wiki-panel-footer {
     height: 30px;
     width: 100%;
+    border-top: 1px solid var(--soft-border);
 }
 
 .wiki-panel-header strong {
@@ -852,6 +853,7 @@ body {
         display: block;
     }
 }
+
 
 
 
