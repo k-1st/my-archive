@@ -738,16 +738,11 @@ body {
 .wiki-content-wrapper {
     box-sizing: border-box;
     flex: 1 1 auto;
-
     width: 100%;
     min-height: 0;
     min-width: 0;
-
-    padding: 16px;
-
     overflow-y: auto;
     overflow-x: hidden;
-
     scrollbar-gutter: stable;
 }
 
@@ -755,11 +750,12 @@ body {
 .wiki-content {
     width: 100%;
     min-width: 0;
-
+    height: 100%;
     font-size: 13px;
     line-height: 1.55;
-
+    border-right: 1px solid var(--soft-border);
     overflow-wrap: anywhere;
+    padding: 12px;
 }
 
 /* Fixed footer */
