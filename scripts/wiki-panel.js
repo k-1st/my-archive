@@ -5,7 +5,6 @@
     const panel = document.getElementById("wiki-panel");
     const content = document.getElementById("wiki-content");
     const toggle = document.getElementById("wiki-toggle");
-    const close = document.getElementById("wiki-close");
     const backdrop = document.getElementById("wiki-backdrop");
 
     if (!shell || !panel || !content || !toggle) return;
@@ -83,7 +82,6 @@
     }
 
     toggle.addEventListener("click", togglePanel);
-    close?.addEventListener("click", closePanel);
     backdrop?.addEventListener("click", closePanel);
 
     mobileQuery.addEventListener("change", () => {
