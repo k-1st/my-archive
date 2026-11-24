@@ -296,11 +296,6 @@ document.getElementById("more-home").addEventListener("click", () => {
     closeMoreMenu();
 });
 
-document.getElementById("more-sidebar").addEventListener("click", () => {
-    toggleSidebar();
-    closeMoreMenu();
-});
-
 /* --------------------------------------------------
    Browser history and navigation
 -------------------------------------------------- */
